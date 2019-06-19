@@ -1,0 +1,269 @@
+@charset "UTF-8";
+@import 'theme.config.less';
+
+
+body {
+    background: transparent;
+}
+
+.hide {
+    display: none;
+}
+
+.hr {
+    height: 1px;
+    background: #aaa;
+    width: 80%;
+    margin: 10px auto;
+
+}
+
+.main_bg {
+    background: @sub_color
+}
+
+.side_bg {
+    background: @main_color
+}
+
+
+.floatbox {
+    background: @main_color;
+    border: 1px solid @sub_color;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    -webkit-app-region: drag;
+    cursor: default;
+    transition: all @speed;
+    -webkit-transition: all @speed;
+}
+
+.floatbox span {
+    color: @font_w_color;
+    text-align: center;
+    width: 100%;
+    line-height: 50px;
+    display: block;
+    font-size: 12px;
+}
+
+.floatbox.open {
+    width: 800px;
+    height: 600px;
+    transition: all @speed;
+    -webkit-transition: all @speed;
+}
+
+
+
+
+
+
+.layout-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    flex-basis: auto;
+    box-sizing: border-box;
+    min-width: 0;
+    transition: all @speed;
+
+}
+
+.layout-header {
+    color: @font_w_color;
+    height: 40px;
+    width: 100%;
+    z-index: 100;
+    -webkit-app-region: drag;
+    border-top-right-radius: @border_radius;
+    border-top-left-radius: @border_radius;
+}
+
+.layout-side {
+    background: @main_color;
+    flex: 0.4;
+    color: @font_w_color;
+    border-top-left-radius: @border_radius;
+    border-bottom-left-radius: @border_radius;
+}
+
+.layout-main {
+    background: @sub_color;
+    flex: 1;
+    color: @font_w_color;
+    border: 1px solid #ccc;
+    border-top-right-radius: @border_radius;
+    border-bottom-right-radius: @border_radius
+}
+
+.is-vertical {
+    flex-direction: column;
+}
+
+
+
+.filter .item {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #b6b6b6
+}
+
+.filter .item span.name {
+    display: inline-block;
+    margin-left: 5px;
+    width: 60%
+}
+
+.filter .item span.num {
+    display: inline-block;
+    text-align: right;
+    width: 20%
+}
+
+.filter .item:hover,
+.filter .item.checked {
+    background: @primary_color;
+    color: #fff;
+}
+
+.task_type .title {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #999
+}
+
+.task_type .title span {
+    text-align: left;
+    display: inline-block;
+    width: 87%;
+    font-weight: bold;
+}
+
+.task_type .title i {
+    text-align: right;
+    display: inline-block;
+    width: 10%;
+    cursor: pointer;
+}
+
+.add {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.add input {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid @font_g_color;
+    color: @font_add_color;
+    border-radius: 3px;
+}
+
+.task_list {
+    margin: 10px auto;
+    margin-top:20px;
+    padding-bottom: 20px;
+    height: 440px;
+    overflow: scroll;
+    position: relative;
+}
+
+.task_list .group {
+    // width: 90%;
+    // margin: 0 auto;
+    display: block;
+    position: absolute;
+    left: 5%;
+}
+
+.task_list .item {
+    color: #666;
+    padding: 10px 0;
+    font-size: 14px;
+    width: 100%;
+    position: relative;
+}
+
+
+
+.task_list .item >label{
+    color: #666;
+    font-size: 14px;
+}
+
+
+.task_list .item .title {
+    width: 425px;
+    color: #666;
+}
+
+.task_list .item:hover .title{
+    color:@primary_color
+    }
+
+.task_list .item .tools {
+    width: 60px;
+    vertical-align: top;
+    display: inline-block;
+    position: relative;
+    bottom: 2px;
+}
+
+.task_list .item .tools i {
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.task_list .item .tools i:hover {
+    color: @primary_color
+}
+
+
+.task_list .item span.title {
+    display: inline-block;
+    padding-left: 5px;
+}
+
+.tash_over {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.tash_over span {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    color: @sub_color;
+    background: #888;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.tash_over i {
+    padding: 0 5px;
+}
+
+.tash_over span:hover {
+    background: #555;
+}
+
+.ivu-checkbox {
+    vertical-align: top;
+    position: relative;
+    top: 3px;
+}
+
+.ivu-checkbox-checked .ivu-checkbox-inner {
+    border-color: @primary_color;
+    background-color: @primary_color;
+}
+
+.ivu-checkbox-checked:hover .ivu-checkbox-inner {
+    border-color: @primary_color;
+}
