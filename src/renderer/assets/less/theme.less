@@ -18,6 +18,23 @@ body {
 
 }
 
+.button {
+    display: inline-block;
+    width: 120px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 14px;
+    background: @primary_color;
+    color: @font_w_color;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.button:hover {
+    background: @primary_color - 20
+}
+
 .main_bg {
     background: @sub_color
 }
@@ -150,25 +167,70 @@ body {
     cursor: pointer;
 }
 
-.add {
-    width: 90%;
+
+.addType .content {
+    width: 60%;
     margin: 0 auto;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 190px;
 }
 
-.add input {
+
+.addType .content input {
     width: 100%;
     height: 40px;
     padding: 0 10px;
     border: 1px solid @font_g_color;
     color: @font_add_color;
     border-radius: 3px;
+    margin-bottom: 20px;
 }
+
+
+
+.tools {
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.tools input {
+    width: 430px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid @font_g_color;
+    color: @font_add_color;
+    border-radius: 3px;
+    margin: 0 5px;
+}
+
+.tools .addTask {
+    color: #666;
+    display: inline-block;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.tools .addTask i {
+    font-size: 20px;
+    position: relative;
+    left: -2px;
+}
+
+.tools .select {
+    width: 60px;
+    position: absolute;
+    right: -10px;
+    top: 5px;
+}
+
 
 .task_list {
     margin: 10px auto;
-    margin-top:20px;
+    margin-top: 20px;
     padding-bottom: 20px;
-    height: 440px;
+    height: 430px;
     overflow: scroll;
     position: relative;
 }
@@ -191,7 +253,7 @@ body {
 
 
 
-.task_list .item >label{
+.task_list .item>label {
     color: #666;
     font-size: 14px;
 }
@@ -202,9 +264,9 @@ body {
     color: #666;
 }
 
-.task_list .item:hover .title{
-    color:@primary_color
-    }
+.task_list .item:hover .title {
+    color: @primary_color
+}
 
 .task_list .item .tools {
     width: 60px;
@@ -228,6 +290,9 @@ body {
     display: inline-block;
     padding-left: 5px;
 }
+
+
+
 
 .tash_over {
     width: 90%;
@@ -266,4 +331,20 @@ body {
 
 .ivu-checkbox-checked:hover .ivu-checkbox-inner {
     border-color: @primary_color;
+}
+
+
+.ivu-select-selection {
+    border: none;
+}
+
+.ivu-select-single .ivu-select-selection .ivu-select-placeholder,
+.ivu-select-single .ivu-select-selection .ivu-select-selected-value,.ivu-select-item {
+    font-size: 14px!important;
+
+}
+
+.ivu-select-visible .ivu-select-selection{
+    -webkit-box-shadow:none;
+   box-shadow:none
 }
