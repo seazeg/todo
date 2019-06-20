@@ -2,15 +2,20 @@ import Vue from 'vue'
 import 'iview/dist/styles/iview.css';
 import App from './App'
 import router from './router'
-import egUtils from 'eg-utils'
+import moment from 'moment'
+// import egUtils from 'eg-utils'
+import {local} from './libs/local'
 import './components/index'
 
 
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
-Vue.prototype.egUtils = egUtils
+// Vue.prototype.egUtils = egUtils
+Vue.prototype.$moment = moment;
 
+
+local.initData();
 
 global.vm = new Vue({
   components: { App },

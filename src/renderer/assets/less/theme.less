@@ -324,8 +324,9 @@ body {
     display: inline-block;
     padding-left: 5px;
 }
+
 .task_list .item span.title.left {
-    padding-left:25px;
+    padding-left: 25px;
     width: 455px;
 }
 
@@ -397,7 +398,13 @@ body {
 .ivu-select-item-selected,
 .ivu-select-item-selected:hover {
     color: @primary_color;
+}
 
+.ivu-btn-primary:hover,
+.ivu-date-picker-cells-cell-selected em,
+.ivu-date-picker-cells-cell-selected:hover em,
+.ivu-date-picker-cells-cell-today em:after {
+    background-color: @primary_color - 20;
 }
 
 .ivu-input-prefix i,
