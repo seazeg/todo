@@ -31,9 +31,10 @@
           <span class="num">{{item.num}}</span>
         </div>
       </div>
-      <Modal class="addType" v-model="isAddType" fullscreen title="创建事务分类" ref="addType_modal" footer-hide>
+      <Modal class="addType" v-model="isAddType" fullscreen title="创建事务分类" ref="addType_modal" @on-cancel="addTypeClose"
+        footer-hide>
         <div class="content">
-          <input type="text" placeholder="事务分类名称..." :value="addType" ref="addType" />
+          <input type="text" placeholder="事务分类名称..." v-model="addType" ref="addType" />
           <span class="button" @click="addTypeBox">创建</span>
         </div>
       </Modal>
@@ -43,22 +44,26 @@
       <!-- 列表功能 -->
       <div class="tools">
         <div class="addTask">
-          <i class="iconfont icon-jia" @click="isTaskType=true"></i>
+          <i class="iconfont icon-jia" @click="isTask=true"></i>
         </div>
+        <!-- 搜索 -->
         <input type="text" placeholder="搜索事务..." />
+        <!-- 条件筛选 -->
         <Select v-model="thisFilter" class="select">
           <Option v-for="(item,index) in filterList" :value="item.value" :key="index">{{ item.label }}</Option>
         </Select>
-        <Modal class="addType" v-model="isTaskType" fullscreen title="创建事务" ref="addTask_modal" footer-hide>
+        <!-- 创建弹层 -->
+        <Modal class="addType" v-model="isTask" fullscreen title="创建事务" ref="addTask_modal" @on-cancel="addTaskClose"
+          footer-hide>
           <div class="content mt">
-            <input type="text" placeholder="事务名称..." :value="taskType" ref="taskType" />
+            <input type="text" placeholder="事务名称..." v-model="taskName" />
             <div class="box">
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择提醒时间" class="datetime"
                 placement="right" :options="dateOption" :clearable="false" :transfer="true" ref="datetime"></DatePicker>
               <Select v-model="thisTimes" class="select">
                 <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}</Option>
               </Select>
-              <Select v-model="thisTasktype" class="select" placeholder="事务分类">
+              <Select v-model="thisTasktype" class="select" placeholder="选择分类">
                 <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">{{ item.label }}</Option>
               </Select>
             </div>
@@ -71,12 +76,38 @@
         <transition name="component-fade" mode="out-in">
           <div class="group" v-show="!isOpen">
             <div class="item" v-for="(item,index) in todolist" v-if="item.status==0&&item.isShow" :key="index">
-              <Checkbox v-model="item.checked">
+              <Checkbox v-model="item.checked" v-if="!menuList[1].checked">
                 <span class="title">{{item.title}}</span>
               </Checkbox>
-              <span class="tools"><i class="iconfont icon-bianji edit" @click="editTask(item)"></i>
+              <span class="title left" v-else>{{item.title}}</span>
+              <span class="tools">
+                <i class="iconfont icon-bianji edit" @click="openEdit(item,index)" v-if="!menuList[1].checked"></i>
+                <i class="iconfont icon-huifu revert" @click="revertTask(item)" v-else></i>
                 <i class="iconfont icon-shanchu remove" @click="removeTask(item)"></i></span>
+              <!-- 编辑弹层 -->
+              <Modal class="addType" fullscreen title="编辑事务" :ref="'editTask_modal'+index" @on-cancel="editTaskClose"
+                footer-hide>
+                <div class="content mt">
+                  <input type="text" placeholder="事务名称..." v-model="item.title" />
+                  <div class="box">
+                    <DatePicker type="datetime" v-model="item.remindDate" format="yyyy-MM-dd HH:mm" placeholder="选择提醒时间"
+                      class="datetime" placement="right" :options="dateOption" :clearable="false" :transfer="true"
+                      ref="datetime">
+                    </DatePicker>
+                    <Select v-model="item.times" class="select">
+                      <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
+                      </Option>
+                    </Select>
+                    <Select v-model="item.category" class="select" placeholder="选择分类">
+                      <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">{{ item.label }}
+                      </Option>
+                    </Select>
+                  </div>
+                  <span class="button" @click="editTask(index)">修改</span>
+                </div>
+              </Modal>
             </div>
+
           </div>
         </transition>
         <transition name="component-fade" mode="out-in">
@@ -90,6 +121,7 @@
             </div>
           </div>
         </transition>
+
       </div>
       <div class="tash_over" v-if="!menuList[1].checked">
         <span @click="toggle"><i class="iconfont icon-wancheng" v-show="!isOpen"></i><i class="iconfont icon-shijian"
@@ -100,11 +132,15 @@
 </template>
 
 <script>
+  import {
+    setTimeout
+  } from 'timers';
+  let thisEditTask = {}
   export default {
     data() {
       return {
-        isTaskType: false,
-        taskType: "",
+        isTask: false,
+        taskName: "",
         isAddType: false,
         addType: "",
         isOpen: false,
@@ -113,6 +149,7 @@
         thisTasktype: "",
         checkedTaskType: '',
         toggleName: "显示已经完成事务",
+        tasktypeList: [],
         menuList: [{
           name: "全部",
           num: 0,
@@ -142,7 +179,7 @@
           title: "普通事务普通事务", //名称
           category: "普通事务", //
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "一次",
           status: 0,
           checked: false,
           isShow: false,
@@ -151,7 +188,7 @@
           title: "废稿废稿废稿",
           category: "普通事务",
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "一次",
           status: 0,
           checked: false,
           isShow: false,
@@ -160,7 +197,7 @@
           title: "废稿废稿废稿",
           category: "普通事务",
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "一次",
           status: 0,
           checked: false,
           isShow: false,
@@ -169,7 +206,7 @@
           title: "重要事务重要事务",
           category: "重要事务",
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "循环",
           status: 0,
           checked: false,
           isShow: false,
@@ -178,7 +215,7 @@
           title: "重要事务重要事务",
           category: "重要事务",
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "循环",
           status: 0,
           checked: false,
           isShow: false,
@@ -187,7 +224,7 @@
           title: "钉钉打卡",
           category: "重要事务",
           remindDate: "2019-6-18 18:00",
-          dateType: "今天",
+          times: "循环",
           status: 1,
           checked: true,
           isShow: false,
@@ -219,8 +256,10 @@
             label: "一次"
           }
         ],
-        tasktypeList: [],
         dateOption: {
+          disabledDate(date) {
+            return date && date.valueOf() < Date.now() - 86400000;
+          },
           shortcuts: [{
               text: '今天',
               value() {
@@ -253,7 +292,7 @@
               }
             }
           ]
-        },
+        }
       }
     },
     methods: {
@@ -337,14 +376,19 @@
         }
       },
       addTypeBox() {
-        this.menuList.push({
-          name: this.$refs.addType.value,
+        let _this = this
+        _this.menuList.push({
+          name: _this.addType,
           num: 0,
           icon: "icon-wenjian",
           type: "taskbox",
           checked: false
         });
-        this.$refs.addType_modal.close()
+        _this.$refs.addType_modal.close();
+        _this.addType = "";
+      },
+      addTypeClose() {
+        _this.addType = "";
       },
       toggle() {
         this.isOpen = !this.isOpen;
@@ -355,31 +399,62 @@
         }
       },
       addTask() {
-        let title = this.$refs.taskType.value,
-          date = this.$refs.datetime.visualValue,
-          times = this.thisTimes,
-          category = "普通事务",
+        let _this = this
+        let title = _this.taskName,
+          date = _this.$refs.datetime.visualValue,
+          times = _this.thisTimes,
+          category = _this.thisTasktype,
           isShow = false,
-          taskType = this.checkedTaskType
+          taskType = _this.checkedTaskType
 
         if (taskType == '全部' || taskType == category) {
           isShow = true
         }
-        this.todolist.push({
+        _this.todolist.push({
           title: title,
-          category: "普通事务",
+          category: category,
           remindDate: date,
-          dateType: times,
+          times: times,
           status: 0,
           checked: false,
           isShow: isShow,
           isRecover: false
         })
-        this.updateNum();
-        this.$refs.addTask_modal.close()
+        _this.updateNum();
+        _this.$refs.addTask_modal.close();
+        _this.taskName = "";
+        _this.$refs.datetime.handleClear()
       },
-      editTask() {
+      addTaskClose(e) {
+        _this.taskName = "";
+        _this.$refs.datetime.handleClear()
+      },
+      openEdit(obj, index) {
+        let _this = this;
+        let item = JSON.parse(JSON.stringify(obj));
+        _this.$refs['editTask_modal' + index][0].visible = true;
+        thisEditTask = {
+          title: item.title,
+          category: item.category,
+          remindDate: item.remindDate,
+          times: item.times,
+          index: index
+        }
 
+      },
+      editTask(index) {
+        let _this = this;
+        _this.$refs['editTask_modal' + index][0].visible = false;
+      },
+      editTaskClose() {
+        console.log(thisEditTask);
+        let item = thisEditTask;
+        let _this = this;
+        let todo = _this.todolist[item.index]
+        _this.$set(todo, 'title', item.title);
+        _this.$set(todo, 'category', item.category)
+        _this.$set(todo, 'remindDate', item.remindDate)
+        _this.$set(todo, 'times', item.times)
       },
       removeTask(obj) {
         let todolist = this.todolist;
