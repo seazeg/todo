@@ -43,13 +43,30 @@
       <!-- 列表功能 -->
       <div class="tools">
         <div class="addTask">
-          <i class="iconfont icon-jia"></i>
+          <i class="iconfont icon-jia" @click="isTaskType=true"></i>
         </div>
         <input type="text" placeholder="搜索事务..." />
         <Select v-model="thisFilter" class="select">
           <Option v-for="(item,index) in filterList" :value="item.value" :key="index">{{ item.label }}</Option>
         </Select>
+        <Modal class="addType" v-model="isTaskType" fullscreen title="创建事务" ref="addTask_modal" footer-hide>
+          <div class="content mt">
+            <input type="text" placeholder="事务名称..." :value="taskType" ref="taskType" />
+            <div class="box">
+              <DatePicker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择提醒时间" class="datetime"
+                placement="right" :options="dateOption" :clearable="false" :transfer="true" ref="datetime"></DatePicker>
+              <Select v-model="thisTimes" class="select">
+                <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}</Option>
+              </Select>
+              <Select v-model="thisTasktype" class="select" placeholder="事务分类">
+                <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">{{ item.label }}</Option>
+              </Select>
+            </div>
+            <span class="button" @click="addTask">创建</span>
+          </div>
+        </Modal>
       </div>
+      <!-- 列表内容 -->
       <div class="task_list">
         <transition name="component-fade" mode="out-in">
           <div class="group" v-show="!isOpen">
@@ -73,12 +90,6 @@
             </div>
           </div>
         </transition>
-        <Modal class="addType" v-model="isTaskType" fullscreen title="创建事务" ref="task_modal" footer-hide>
-          <div class="content">
-            <input type="text" placeholder="事务名称..." :value="taskType" ref="taskType" />
-            <span class="button" @click="addTask">创建</span>
-          </div>
-        </Modal>
       </div>
       <div class="tash_over" v-if="!menuList[1].checked">
         <span @click="toggle"><i class="iconfont icon-wancheng" v-show="!isOpen"></i><i class="iconfont icon-shijian"
@@ -97,7 +108,10 @@
         isAddType: false,
         addType: "",
         isOpen: false,
-        thisFilter: 2,
+        thisFilter: "今天",
+        thisTimes: "一次",
+        thisTasktype: "",
+        checkedTaskType: '',
         toggleName: "显示已经完成事务",
         menuList: [{
           name: "全部",
@@ -180,18 +194,66 @@
           isRecover: false
         }],
         filterList: [{
-            value: 1,
+            value: "循环",
             label: "循环"
           },
           {
-            value: 2,
-            label: '今天'
+            value: "一次",
+            label: "一次"
           },
           {
-            value: 3,
+            value: "今天",
+            label: "今天"
+          },
+          {
+            value: "本周",
             label: "本周"
           }
-        ]
+        ],
+        timesList: [{
+            value: "循环",
+            label: "循环"
+          },
+          {
+            value: "一次",
+            label: "一次"
+          }
+        ],
+        tasktypeList: [],
+        dateOption: {
+          shortcuts: [{
+              text: '今天',
+              value() {
+                return new Date();
+              },
+              // onClick: (picker) => {
+              //   this.$Message.info('Click today');
+              // }
+            },
+            {
+              text: '明天',
+              value() {
+                const date = new Date();
+                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                return date;
+              },
+              onClick: (picker) => {
+                this.$Message.info('Click yesterday');
+              }
+            },
+            {
+              text: '一周',
+              value() {
+                const date = new Date();
+                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                return date;
+              },
+              onClick: (picker) => {
+                this.$Message.info('Click a week ago');
+              }
+            }
+          ]
+        },
       }
     },
     methods: {
@@ -199,6 +261,7 @@
         let todolist = this.todolist,
           menuList = this.menuList;
         this.resetStatus();
+        this.checkedTaskType = obj.name
         switch (obj.type) {
           case 'all':
             obj.checked = true;
@@ -263,6 +326,16 @@
         this.isOpen = false;
         this.toggleName = '显示已经完成事务';
       },
+      syncTasktypeList() {
+        for (let item of this.menuList) {
+          if (item.type == 'taskbox') {
+            this.tasktypeList.push({
+              value: item.name,
+              label: item.name
+            })
+          }
+        }
+      },
       addTypeBox() {
         this.menuList.push({
           name: this.$refs.addType.value,
@@ -282,7 +355,28 @@
         }
       },
       addTask() {
-   
+        let title = this.$refs.taskType.value,
+          date = this.$refs.datetime.visualValue,
+          times = this.thisTimes,
+          category = "普通事务",
+          isShow = false,
+          taskType = this.checkedTaskType
+
+        if (taskType == '全部' || taskType == category) {
+          isShow = true
+        }
+        this.todolist.push({
+          title: title,
+          category: "普通事务",
+          remindDate: date,
+          dateType: times,
+          status: 0,
+          checked: false,
+          isShow: isShow,
+          isRecover: false
+        })
+        this.updateNum();
+        this.$refs.addTask_modal.close()
       },
       editTask() {
 
@@ -311,11 +405,12 @@
       }
     },
     created() {
-      this.showList(this.menuList[0]);
-      this.updateNum()
+      this.showList(this.menuList[0])
+      this.updateNum();
+      this.syncTasktypeList();
     },
     mounted() {
-      console.log(this.filterList);
+      console.log(this.checkedTaskType);
     }
   }
 </script>

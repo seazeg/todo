@@ -187,6 +187,31 @@ body {
     margin-bottom: 20px;
 }
 
+.addType .content .box {
+    width: 100%;
+}
+
+.addType .content.mt {
+    margin-top: 160px;
+}
+
+.addType .content .box .ivu-date-picker {
+    width: 50%;
+}
+
+.addType .content .box .select {
+    width: 24%;
+    vertical-align: top;
+}
+
+.addType .content .box .ivu-select-single .ivu-select-selection,
+.addType .content .ivu-select-single .ivu-select-selection .ivu-select-placeholder,
+.addType .content .ivu-select-single .ivu-select-selection .ivu-select-selected-value {
+    border-color: #ccc;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+}
 
 
 .tools {
@@ -224,6 +249,15 @@ body {
     right: -10px;
     top: 5px;
 }
+
+
+.tools .ivu-select-selection {
+    border: none;
+}
+
+
+
+
 
 
 .task_list {
@@ -318,13 +352,18 @@ body {
     background: #555;
 }
 
+
+//iview样式重绘
 .ivu-checkbox {
     vertical-align: top;
     position: relative;
     top: 3px;
 }
 
-.ivu-checkbox-checked .ivu-checkbox-inner {
+.ivu-checkbox-checked .ivu-checkbox-inner,
+.ivu-btn-primary,
+.ivu-btn-primary.active,
+.ivu-btn-primary:active {
     border-color: @primary_color;
     background-color: @primary_color;
 }
@@ -334,17 +373,45 @@ body {
 }
 
 
-.ivu-select-selection {
-    border: none;
+.ivu-select-visible .ivu-select-selection,
+.ivu-input:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none
 }
 
 .ivu-select-single .ivu-select-selection .ivu-select-placeholder,
-.ivu-select-single .ivu-select-selection .ivu-select-selected-value,.ivu-select-item {
-    font-size: 14px!important;
+.ivu-select-single .ivu-select-selection .ivu-select-selected-value,
+.ivu-select-item {
+    font-size: 14px !important;
 
 }
 
-.ivu-select-visible .ivu-select-selection{
-    -webkit-box-shadow:none;
-   box-shadow:none
+.ivu-select-item {
+    text-align: left
+}
+
+.ivu-select-item-selected,
+.ivu-select-item-selected:hover {
+    color: @primary_color;
+
+}
+
+.ivu-input-prefix i,
+.ivu-input-suffix i {
+    line-height: 40px;
+}
+
+.ivu-input {
+    font-size: 14px
+}
+
+.ivu-date-picker-cells-focused em {
+    -webkit-box-shadow: 0 0 0 1px @primary_color inset;
+    box-shadow: 0 0 0 1px @primary_color inset;
+}
+
+.ivu-date-picker-cells-cell-today em:after,
+.ivu-date-picker-cells-cell-selected em,
+.ivu-date-picker-cells-cell-selected:hover em {
+    background: @primary_color
 }
