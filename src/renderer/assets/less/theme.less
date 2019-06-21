@@ -74,9 +74,6 @@ body {
 
 
 
-
-
-
 .layout-container {
     height: 100%;
     display: flex;
@@ -121,6 +118,23 @@ body {
 }
 
 
+.head_tools{
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+}
+.head_tools i{
+    color:#b6b6b6;
+    font-size:24px;
+    margin-top: 5px;
+    display: inline-block;
+    margin-right:20px;
+    cursor: pointer;
+}
+
+.head_tools i.selected{
+    color:@primary_color;
+}
 
 .filter .item {
     padding: 10px 20px;
@@ -300,6 +314,10 @@ body {
 
 .task_list .item:hover .title {
     color: @primary_color
+}
+
+.task_list .item .title.del{
+    text-decoration: line-through
 }
 
 .task_list .item .tools {

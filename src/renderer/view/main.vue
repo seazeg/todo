@@ -1,7 +1,9 @@
 <template>
   <layout-container>
     <layout-side>
-      <layout-header class="side_bg"></layout-header>
+      <layout-header class="side_bg">
+
+      </layout-header>
       <div class="filter">
         <div class="item" :class="{'checked':item.checked}" v-for="(item,index) in menuList" :key="index"
           v-if="item.type=='all'" @click="showList(item)">
@@ -31,6 +33,10 @@
           <span class="num">{{item.num}}</span>
         </div>
       </div>
+      <div class="head_tools">
+        <i class="iconfont icon-biaoqian" :class="{'selected':modeStatus}" @click="changeMode"></i>
+      </div>
+
       <Modal class="addType" v-model="isAddType" fullscreen title="创建事项分类" ref="addType_modal" @on-cancel="addTypeClose"
         footer-hide>
         <div class="content">
@@ -40,14 +46,16 @@
       </Modal>
     </layout-side>
     <layout-main>
-      <layout-header class="main_bg"></layout-header>
+      <layout-header class="main_bg">
+
+      </layout-header>
       <!-- 列表功能 -->
       <div class="tools">
         <div class="addTask">
           <i class="iconfont icon-jia" @click="isTask=true"></i>
         </div>
         <!-- 搜索 -->
-        <input type="text" placeholder="搜索事项..." />
+        <input type="text" placeholder="搜索事项..." @keyup="search" v-model="searchKey" />
         <!-- 条件筛选 -->
         <Select v-model="thisFilter" class="select">
           <Option v-for="(item,index) in filterList" :value="item.value" :key="index">{{ item.label }}</Option>
@@ -77,7 +85,7 @@
         <transition name="component-fade" mode="out-in">
           <div class="group" v-show="!isOpen">
             <div class="item" v-for="(item,index) in todolist" v-if="item.status==0&&item.isShow" :key="index">
-              <Checkbox v-model="item.checked" v-if="!menuList[1].checked">
+              <Checkbox v-model="item.checked" v-if="!menuList[1].checked" @on-change="finishTask(item)">
                 <span class="title">{{item.title}}</span>
               </Checkbox>
               <span class="title left" v-else>{{item.title}}</span>
@@ -108,14 +116,13 @@
                 </div>
               </Modal>
             </div>
-
           </div>
         </transition>
         <transition name="component-fade" mode="out-in">
           <div class="group" v-show="isOpen">
             <div class="item" v-for="(item,index) in todolist" v-if="item.status==1&&item.isShow" :key="index">
               <Checkbox v-model="item.checked" disabled>
-                <span class="title">{{item.title}}</span>
+                <span class="title del">{{item.title}}</span>
               </Checkbox>
               <span class="tools"><i class="iconfont icon-bianji edit"></i>
                 <i class="iconfont icon-shanchu remove" @click="removeTask(item)"></i></span>
@@ -134,12 +141,17 @@
 
 <script>
   import {
+    ipcRenderer
+  } from 'electron'
+  import {
     local
   } from '../libs/local'
   let thisEditTask = {}
   export default {
     data() {
       return {
+        modeStatus: false,
+        searchKey: "",
         isTask: false,
         taskName: "",
         addDate: "",
@@ -188,10 +200,7 @@
               text: '今天',
               value() {
                 return new Date();
-              },
-              // onClick: (picker) => {
-              //   this.$Message.info('Click today');
-              // }
+              }
             },
             {
               text: '明天',
@@ -199,9 +208,6 @@
                 const date = new Date();
                 date.setTime(date.getTime() - 3600 * 1000 * 24);
                 return date;
-              },
-              onClick: (picker) => {
-                this.$Message.info('Click yesterday');
               }
             },
             {
@@ -210,9 +216,6 @@
                 const date = new Date();
                 date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
                 return date;
-              },
-              onClick: (picker) => {
-                this.$Message.info('Click a week ago');
               }
             }
           ]
@@ -220,6 +223,10 @@
       }
     },
     methods: {
+      changeMode() {
+        this.modeStatus = !this.modeStatus
+        ipcRenderer.send('modeStatus', this.modeStatus);
+      },
       showList(obj) {
         let todolist = this.todolist,
           menuList = this.menuList;
@@ -279,6 +286,7 @@
         }
 
       },
+      //分类选择后的显示是否完成的重置
       resetStatus() {
         for (let m of this.menuList) {
           m.checked = false;
@@ -289,6 +297,7 @@
         this.isOpen = false;
         this.toggleName = '显示已经完成事项';
       },
+      //弹层中分类同步
       syncTasktypeList() {
         for (let item of this.menuList) {
           if (item.type == 'taskbox') {
@@ -299,6 +308,7 @@
           }
         }
       },
+      //创建分类
       addTypeBox() {
         let _this = this
         _this.menuList.push({
@@ -311,6 +321,7 @@
         _this.$refs.addType_modal.close();
         _this.addType = "";
       },
+      //关闭弹层回调，重置弹层内容成初始值
       addTypeClose() {
         let _this = this;
         _this.addType = "";
@@ -323,6 +334,7 @@
           this.toggleName = '显示待办事项'
         }
       },
+      //创建任务
       addTask() {
         let _this = this
         let title = _this.taskName,
@@ -351,12 +363,14 @@
         _this.addDate = ""
         _this.thisTasktype = ""
       },
+      //关闭弹层回调，重置弹层内容成初始值
       addTaskClose(e) {
         let _this = this;
         _this.taskName = "";
         _this.addDate = "";
         _this.thisTasktype = ""
       },
+      //打开编辑弹层
       openEdit(obj, index) {
         let _this = this;
         let item = JSON.parse(JSON.stringify(obj));
@@ -368,12 +382,13 @@
           times: item.times,
           index: index
         }
-        console.log(item);
       },
+      //编辑任务
       editTask(index) {
         let _this = this;
         _this.$refs['editTask_modal' + index][0].visible = false;
       },
+      //关闭弹层回调，重置弹层内容成初始值
       editTaskClose() {
         let item = thisEditTask;
         let _this = this;
@@ -383,6 +398,7 @@
         _this.$set(todo, 'remindDate', item.remindDate)
         _this.$set(todo, 'times', item.times)
       },
+      //删除任务
       removeTask(obj) {
         let todolist = this.todolist;
         if (!this.menuList[1].checked) {
@@ -404,6 +420,61 @@
           this.$Message.success('事项删除成功');
         }
         this.updateNum();
+      },
+      //完成任务
+      finishTask(obj) {
+        if (obj.checked) {
+          obj.status = 1;
+        }
+      },
+      //即时搜索
+      search() {
+        let _this = this;
+        let todolist = _this.todolist,
+          searchKey = _this.searchKey,
+          checkedTaskType = this.checkedTaskType
+
+        for (let t of todolist) {
+          t.isShow = false;
+        }
+        todolist.filter(function (obj) {
+          if (searchKey) {
+            if (checkedTaskType == '全部') {
+              if (obj.title.includes(searchKey) && !obj.isRecover) {
+                obj.isShow = true;
+              }
+            } else if (checkedTaskType == '废稿箱') {
+              if (obj.title.includes(searchKey) && obj.isRecover) {
+                obj.isShow = true;
+              }
+            } else {
+              if (obj.title.includes(searchKey) && obj.category == checkedTaskType && !obj.isRecover) {
+                obj.isShow = true;
+              }
+            }
+
+          } else {
+            if (checkedTaskType == '全部') {
+              for (let t of todolist) {
+                if (!t.isRecover) {
+                  t.isShow = true;
+                }
+              }
+            } else if (checkedTaskType == '废稿箱') {
+              for (let t of todolist) {
+                if (t.isRecover) {
+                  t.isShow = true;
+                }
+              }
+            } else {
+              for (let t of todolist) {
+                if (t.category == checkedTaskType && !t.isRecover) {
+                  t.isShow = true;
+                }
+              }
+            }
+          }
+        })
       }
     },
     watch: {
@@ -421,6 +492,7 @@
       }
     },
     created() {
+      //本地数据同步
       this.menuList = JSON.parse(local.getData('menuList'));
       this.todolist = JSON.parse(local.getData('todolist'));
     },

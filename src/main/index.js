@@ -57,7 +57,7 @@ function floatWindow() {
 
 
 
-  // macAllFullScreenTopHack(floatBox)
+  macAllFullScreenTopHack(floatBox)
 
 
 
@@ -108,19 +108,19 @@ function floatWindow() {
 
 
 
-  // floatBox.on('blur', (e, cmd) => {
-  //   let x = floatBox.getBounds().x,
-  //     y = floatBox.getBounds().y;
-  //   e.sender.send('closeMainWin', true);
-  //   setTimeout(() => {
-  //     floatBox.setBounds({
-  //       x: x,
-  //       y: y,
-  //       width: floatWidth,
-  //       height: floatHeight
-  //     });
-  //   }, 300);
-  // })
+  floatBox.on('blur', (e, cmd) => {
+    let x = floatBox.getBounds().x,
+      y = floatBox.getBounds().y;
+    e.sender.send('closeMainWin', true);
+    setTimeout(() => {
+      floatBox.setBounds({
+        x: x,
+        y: y,
+        width: floatWidth,
+        height: floatHeight
+      });
+    }, 300);
+  })
   
 }
 
@@ -137,6 +137,11 @@ ipcMain.on('openMainWin', function (e, arg) {
   }
 });
 
+ipcMain.on('modeStatus', function (e, arg) {
+  console.log(arg);
+});
+
+
 
 
 
@@ -145,7 +150,7 @@ ipcMain.on('openMainWin', function (e, arg) {
 //mac下全屏置顶hack
 function macAllFullScreenTopHack(window) {
   app.dock.hide()
-  window.setAlwaysOnTop(true, 'screen-saver')
+  window.setAlwaysOnTop(true, 'normal')
   window.setVisibleOnAllWorkspaces(true)
   window.setFullScreenable(false)
   window.show()
