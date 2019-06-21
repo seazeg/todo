@@ -425,6 +425,7 @@
       finishTask(obj) {
         if (obj.checked) {
           obj.status = 1;
+          this.updateNum();
         }
       },
       //即时搜索
