@@ -12,6 +12,7 @@ import {
     Message,
     Select,
     Option,
+    OptionGroup,
     Modal
 } from 'iview';
 
@@ -28,6 +29,7 @@ Vue.component('DatePicker', DatePicker);
 Vue.component('Checkbox', Checkbox);
 Vue.component('Select',Select)
 Vue.component('Option',Option)
+Vue.component('OptionGroup',OptionGroup)
 Vue.component('Modal',Modal)
 
 Vue.prototype.$Message = Message

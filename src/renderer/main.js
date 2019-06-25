@@ -6,7 +6,7 @@ import moment from 'moment'
 // import egUtils from 'eg-utils'
 import {local} from './libs/local'
 import './components/index'
-
+import store from './store/index'
 
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
@@ -20,5 +20,6 @@ local.initData();
 global.vm = new Vue({
   components: { App },
   router,
+  store,
   template: '<App/>'
 }).$mount('#app')

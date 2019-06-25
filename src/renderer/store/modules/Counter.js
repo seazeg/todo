@@ -1,20 +1,18 @@
 const state = {
-  main: 0
+  taskNum: 1
 }
 
 const mutations = {
-  DECREMENT_MAIN_COUNTER (state) {
-    state.main--
-  },
-  INCREMENT_MAIN_COUNTER (state) {
-    state.main++
+  setTaskNum(state, num) {
+    state.taskNum = num
   }
 }
 
 const actions = {
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
+  setTaskNum({
+    commit
+  }) {
+    commit('setTaskNum', num)
   }
 }
 

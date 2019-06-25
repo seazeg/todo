@@ -57,8 +57,8 @@
         <!-- 搜索 -->
         <input type="text" placeholder="搜索事项..." @keyup="search" v-model="searchKey" />
         <!-- 条件筛选 -->
-        <Select v-model="thisFilter" class="select">
-          <Option v-for="(item,index) in filterList" :value="item.value" :key="index">{{ item.label }}</Option>
+        <Select v-model="thisFilter" class="select" @on-change="filterSelect">
+          <Option v-for="(item,index) in dateList" :value="item.value" :key="index">{{ item.label }}</Option>
         </Select>
         <!-- 创建弹层 -->
         <Modal class="addType" v-model="isTask" fullscreen title="创建事项" ref="addTask_modal" @on-cancel="addTaskClose"
@@ -69,7 +69,7 @@
               <DatePicker type="datetime" v-model="addDate" format="yyyy-MM-dd HH:mm" placeholder="选择提醒时间"
                 class="datetime" placement="right" :options="dateOption" :clearable="false" :transfer="true"
                 ref="datetime" @on-change="addDate=$event"></DatePicker>
-              <Select v-model="thisTimes" class="select">
+              <Select v-model="thisTimes" class="select" placeholder="选择频率">
                 <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}</Option>
               </Select>
               <Select v-model="thisTasktype" class="select" placeholder="选择分类">
@@ -84,11 +84,12 @@
       <div class="task_list">
         <transition name="component-fade" mode="out-in">
           <div class="group" v-show="!isOpen">
-            <div class="item" v-for="(item,index) in todolist" v-if="item.status==0&&item.isShow" :key="index">
+            <div class="item hover" v-for="(item,index) in todolist" v-if="item.status==0&&item.isShow" :key="index">
               <Checkbox v-model="item.checked" v-if="!menuList[1].checked" @on-change="finishTask(item)">
                 <span class="title">{{item.title}}</span>
               </Checkbox>
               <span class="title left" v-else>{{item.title}}</span>
+              <!-- <span class="date">{{$moment(item.remindDate).format('YYYY-MM-DD HH:mm')}}</span> -->
               <span class="tools">
                 <i class="iconfont icon-bianji edit" @click="openEdit(item,index)" v-if="!menuList[1].checked"></i>
                 <i class="iconfont icon-huifu revert" @click="revertTask(item)" v-else></i>
@@ -103,7 +104,7 @@
                       class="datetime" placement="right" :options="dateOption" :clearable="false" :transfer="true"
                       @on-change="item.remindDate=$event">
                     </DatePicker>
-                    <Select v-model="item.times" class="select">
+                    <Select v-model="item.times" class="select" placeholder="选择频率">
                       <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
                       </Option>
                     </Select>
@@ -124,7 +125,8 @@
               <Checkbox v-model="item.checked" disabled>
                 <span class="title del">{{item.title}}</span>
               </Checkbox>
-              <span class="tools"><i class="iconfont icon-bianji edit"></i>
+              <span class="tools">
+                <i class="iconfont icon-huifu revert" @click="revertTask(item)"></i>
                 <i class="iconfont icon-shanchu remove" @click="removeTask(item)"></i></span>
             </div>
           </div>
@@ -158,7 +160,7 @@
         isAddType: false,
         addType: "",
         isOpen: false,
-        thisFilter: "今天",
+        thisFilter: "全部",
         thisTimes: "一次",
         thisTasktype: "",
         checkedTaskType: '',
@@ -166,32 +168,32 @@
         tasktypeList: [],
         menuList: [],
         todolist: [],
-        filterList: [{
-            value: "循环",
-            label: "循环"
-          },
-          {
-            value: "一次",
-            label: "一次"
-          },
-          {
-            value: "今天",
-            label: "今天"
-          },
-          {
-            value: "本周",
-            label: "本周"
-          }
-        ],
+        dateList: [{
+          value: "全部",
+          label: "全部"
+        }, {
+          value: "今天",
+          label: "今天"
+        }, {
+          value: "本周",
+          label: "本周"
+        }],
         timesList: [{
-            value: "循环",
-            label: "循环"
-          },
-          {
-            value: "一次",
-            label: "一次"
-          }
-        ],
+          value: "10",
+          label: "10分钟"
+        }, {
+          value: "30",
+          label: "30分钟"
+        }, {
+          value: "60",
+          label: "每小时"
+        }, {
+          value: "24",
+          label: "每天"
+        }, {
+          value: "720",
+          label: "每月"
+        }],
         dateOption: {
           disabledDate(date) {
             return date && date.valueOf() < Date.now() - 86400000;
@@ -228,10 +230,13 @@
         ipcRenderer.send('modeStatus', this.modeStatus);
       },
       showList(obj) {
-        let todolist = this.todolist,
-          menuList = this.menuList;
-        this.resetStatus();
-        this.checkedTaskType = obj.name
+        let _this = this;
+        let todolist = _this.todolist,
+          menuList = _this.menuList;
+        _this.resetStatus();
+        _this.checkedTaskType = obj.name
+        _this.thisFilter = '全部'
+        _this.searchKey = "";
         switch (obj.type) {
           case 'all':
             obj.checked = true;
@@ -274,6 +279,7 @@
               temp[n.category] = temp[n.category] + 1
             }
             temp['全部'] = (temp['全部'] || 0) + 1
+            this.$store.commit('setTaskNum', temp['全部']);
           }
 
           if (n.isRecover) {
@@ -387,6 +393,7 @@
       editTask(index) {
         let _this = this;
         _this.$refs['editTask_modal' + index][0].visible = false;
+        _this.updateNum();
       },
       //关闭弹层回调，重置弹层内容成初始值
       editTaskClose() {
@@ -428,12 +435,25 @@
           this.updateNum();
         }
       },
+      //恢复任务
+      revertTask(obj) {
+        if (!this.menuList[1].checked) {
+          //已完成任务的恢复
+          obj.status = 0;
+          obj.checked = false;
+        } else {
+          //废稿箱任务恢复
+          obj.isRecover = false;
+        }
+        this.updateNum();
+      },
       //即时搜索
       search() {
         let _this = this;
         let todolist = _this.todolist,
           searchKey = _this.searchKey,
-          checkedTaskType = this.checkedTaskType
+          checkedTaskType = this.checkedTaskType,
+          thisFilter = this.thisFilter
 
         for (let t of todolist) {
           t.isShow = false;
@@ -457,6 +477,53 @@
           } else {
             if (checkedTaskType == '全部') {
               for (let t of todolist) {
+                if (!t.isRecover && _this.toDateType(t.remindDate, thisFilter)) {
+                  t.isShow = true;
+                }
+              }
+            } else if (checkedTaskType == '废稿箱') {
+              for (let t of todolist) {
+                if (t.isRecover && _this.toDateType(t.remindDate, thisFilter)) {
+                  t.isShow = true;
+                }
+              }
+            } else {
+              for (let t of todolist) {
+                if (!t.isRecover && _this.toDateType(t.remindDate, thisFilter) && t.category == checkedTaskType) {
+                  t.isShow = true;
+                }
+              }
+            }
+          }
+        })
+      },
+      filterSelect(key) {
+        let _this = this;
+        let todolist = _this.todolist,
+          checkedTaskType = this.checkedTaskType;
+
+        for (let t of todolist) {
+          t.isShow = false;
+        }
+        _this.searchKey = "";
+        todolist.filter(function (obj) {
+          if (key != '全部') {
+            if (checkedTaskType == '全部') {
+              if (!obj.isRecover && _this.toDateType(obj.remindDate, key)) {
+                obj.isShow = true;
+              }
+            } else if (checkedTaskType == '废稿箱') {
+              if (obj.isRecover && _this.toDateType(obj.remindDate, key)) {
+                obj.isShow = true;
+              }
+            } else {
+              if (!obj.isRecover && _this.toDateType(obj.remindDate, key) && obj.category == checkedTaskType) {
+                obj.isShow = true;
+              }
+            }
+          } else {
+            if (checkedTaskType == '全部') {
+              for (let t of todolist) {
                 if (!t.isRecover) {
                   t.isShow = true;
                 }
@@ -476,6 +543,28 @@
             }
           }
         })
+      },
+      toDateType(date, key) {
+        let moment = this.$moment;
+        let res = false;
+        if (key == '全部') {
+          res = true
+        } else if (key == '今天') {
+          let thisDate = moment(date).format('YYYY-MM-DD');
+          let nowDate = moment(new Date()).format('YYYY-MM-DD');
+          if (thisDate == nowDate) {
+            res = true;
+          }
+        } else if (key == '本周') {
+          let thisTimestamp = moment(date).valueOf();
+          let startWeekDay = moment().week(moment().week()).startOf('week').valueOf(),
+            endWeekDay = moment().week(moment().week()).endOf('week').valueOf();
+          if (thisTimestamp >= startWeekDay & thisTimestamp <= endWeekDay) {
+            res = true;
+          }
+        } else {}
+
+        return res;
       }
     },
     watch: {

@@ -1,7 +1,7 @@
 <template>
     <div class="floatbox" :class="{'open':open}" @mouseup.prevent="mouseup($event)"
         @mousedown.prevent="mousedown($event)">
-        <span>8</span>
+        <span>{{taskNum}}</span>
     </div>
 </template>
 
@@ -9,6 +9,9 @@
     import {
         ipcRenderer
     } from 'electron'
+    import {
+        local
+    } from '../libs/local'
     export default {
         data() {
             return {
@@ -18,6 +21,11 @@
                 y1: 0,
                 x2: 0,
                 y2: 0
+            }
+        },
+        computed: {
+            taskNum: function () {
+                return this.$store.state.Counter.taskNum
             }
         },
         methods: {
@@ -44,6 +52,21 @@
                 this.$router.push({
                     path: path
                 })
+            },
+            initTaskNum() {
+                let temp = [],
+                    todolist = local.getData('todolist');
+                for (let n of JSON.parse(todolist)) {
+                    if (n.status == 0 && !n.isRecover) {
+                        if (!temp[n.category]) {
+                            temp[n.category] = 1
+                        } else {
+                            temp[n.category] = temp[n.category] + 1
+                        }
+                        temp['全部'] = (temp['全部'] || 0) + 1
+                        this.$store.commit('setTaskNum', temp['全部']);
+                    }
+                }
             }
         },
         mounted() {
@@ -55,8 +78,7 @@
                     _this.switchView('/');
                 }
             })
-
-
+            _this.initTaskNum();
         }
     }
 </script>
