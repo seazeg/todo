@@ -36,8 +36,8 @@
       <div class="head_tools">
         <i class="iconfont icon-biaoqian" :class="{'selected':modeStatus}" @click="changeMode"></i>
       </div>
-      <Modal class="addType" v-model="isAddType" fullscreen title="创建事项分类" ref="addType_modal" @on-cancel="addTypeClose('typeValidate')"
-        footer-hide>
+      <Modal class="addType" v-model="isAddType" fullscreen title="创建事项分类" ref="addType_modal"
+        @on-cancel="addTypeClose('typeValidate')" footer-hide>
         <div class="content">
           <Form ref="typeValidate" :model="typeValidate" :rules="typeRuleValidate">
             <FormItem prop="addType" :show-message="false">
@@ -64,8 +64,8 @@
           <Option v-for="(item,index) in dateList" :value="item.value" :key="index">{{ item.label }}</Option>
         </Select>
         <!-- 创建弹层 -->
-        <Modal class="addType" v-model="isTask" fullscreen title="创建事项" ref="addTask_modal" @on-cancel="addTaskClose('listValidate')"
-          footer-hide>
+        <Modal class="addType" v-model="isTask" fullscreen title="创建事项" ref="addTask_modal"
+          @on-cancel="addTaskClose('listValidate')" footer-hide>
           <div class="content mt">
             <Form ref="listValidate" :model="listValidate" :rules="listRuleValidate">
               <FormItem prop="taskName" :show-message="false">
@@ -120,6 +120,7 @@
                 <i class="iconfont icon-huifu revert" @click="revertTask(item)" v-else></i>
                 <i class="iconfont icon-shanchu remove" @click="removeTask(item)"></i></span>
               <!-- 编辑弹层 -->
+
               <Modal class="addType" fullscreen title="编辑事项" :ref="'editTask_modal'+index" @on-cancel="editTaskClose"
                 footer-hide>
                 <div class="content mt">
@@ -131,9 +132,9 @@
                       <Row>
                         <Col span="12">
                         <FormItem prop="remindDate" :show-message="false">
-                          <DatePicker type="datetime" v-model="item.remindDate" 
-                            format="yyyy-MM-dd HH:mm" placeholder="选择提醒时间" class="datetime" placement="right"
-                            :options="dateOption" :clearable="false" :transfer="true" :editable="false">
+                          <DatePicker type="datetime" v-model="item.remindDate" format="yyyy-MM-dd HH:mm"
+                            placeholder="选择提醒时间" class="datetime" placement="right" :options="dateOption"
+                            :clearable="false" :transfer="true" :editable="false">
                           </DatePicker>
                         </FormItem>
                         </Col>
@@ -411,6 +412,7 @@
             _this.syncTasktypeList();
             _this.$refs.addType_modal.close();
             _this.typeValidate.addType = "";
+            _this.$refs[name].resetFields();
           }
         })
       },
@@ -443,7 +445,7 @@
             if (taskType == '全部' || taskType == category) {
               isShow = true
             }
-            _this.todolist.push({
+            _this.todolist.unshift({
               title: title,
               category: category,
               remindDate: date,
@@ -451,17 +453,20 @@
               status: 0,
               checked: false,
               isShow: isShow,
-              isRecover: false
+              isRecover: false,
+              editVisible: false
             })
 
             _this.updateNum();
-            _this.$refs.addTask_modal.close();
+
             _this.listValidate.taskName = "";
             _this.listValidate.addDate = "";
             _this.listValidate.thisTimes = ""
-            _this.listValidate.thisTasktype = "";
+            _this.listValidate.thisTasktype = ""
+            _this.$refs.addTask_modal.close();
           }
         });
+        _this.$refs[name].resetFields();
       },
       //关闭弹层回调，重置弹层内容成初始值
       addTaskClose(name) {
@@ -477,7 +482,6 @@
         let _this = this;
         let item = JSON.parse(JSON.stringify(obj));
         _this.$refs['editTask_modal' + index][0].visible = true;
-
         thisEditTask = {
           title: item.title,
           category: item.category,
@@ -506,6 +510,10 @@
         _this.$set(todo, 'category', item.category)
         _this.$set(todo, 'remindDate', item.remindDate)
         _this.$set(todo, 'times', item.times)
+        // _this.$nextTick(function () {
+        //   _this.$set(todo, 'editVisible', false)
+        //   _this.$forceUpdate();
+        // });
       },
       //删除任务
       removeTask(obj) {
@@ -546,6 +554,7 @@
         } else {
           //废稿箱任务恢复
           obj.isRecover = false;
+          obj.isShow = false;
         }
         this.updateNum();
       },

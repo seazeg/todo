@@ -6,7 +6,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "定时任务功能",
     "category": "重要事项",
@@ -15,7 +16,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "废稿废稿废稿",
     "category": "普通事项",
@@ -24,7 +26,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": false,
-    "isRecover": true
+    "isRecover": true,
+    "editVisible":false
 }, {
     "title": "关闭弹层后内容重置",
     "category": "普通事项",
@@ -33,7 +36,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "即时搜索功能",
     "category": "普通事项",
@@ -42,7 +46,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "本地存储功能",
     "category": "重要事项",
@@ -51,7 +56,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "无数据时显示优化",
     "category": "普通事项",
@@ -60,7 +66,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "任务状态标识",
     "category": "普通事项",
@@ -69,7 +76,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "分类可拖拽和编辑优化",
     "category": "普通事项",
@@ -78,7 +86,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "筛选功能",
     "category": "普通事项",
@@ -87,7 +96,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "表单必填校验",
     "category": "普通事项",
@@ -96,7 +106,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "已完成任务的可用功能",
     "category": "普通事项",
@@ -105,7 +116,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "任务列表可拖拽功能",
     "category": "普通事项",
@@ -114,7 +126,8 @@ export const todo = [{
     "status": 0,
     "checked": false,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "test",
     "category": "",
@@ -123,7 +136,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }, {
     "title": "test",
     "category": "",
@@ -132,7 +146,8 @@ export const todo = [{
     "status": 1,
     "checked": true,
     "isShow": true,
-    "isRecover": false
+    "isRecover": false,
+    "editVisible":false
 }]
 
 export const menu = [{
