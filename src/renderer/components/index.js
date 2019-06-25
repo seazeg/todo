@@ -13,7 +13,11 @@ import {
     Select,
     Option,
     OptionGroup,
-    Modal
+    Modal,
+    Form,
+    FormItem,
+    Row,
+    Col
 } from 'iview';
 
 
@@ -31,6 +35,10 @@ Vue.component('Select',Select)
 Vue.component('Option',Option)
 Vue.component('OptionGroup',OptionGroup)
 Vue.component('Modal',Modal)
+Vue.component('Form',Form)
+Vue.component('FormItem',FormItem)
+Vue.component('Row',Row)
+Vue.component('Col',Col)
 
 Vue.prototype.$Message = Message
 Vue.prototype.$Modal = Modal

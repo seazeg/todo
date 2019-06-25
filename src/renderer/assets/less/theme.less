@@ -210,11 +210,11 @@ body {
 }
 
 .addType .content .box .ivu-date-picker {
-    width: 50%;
+    width: 100%;
 }
 
 .addType .content .box .select {
-    width: 24%;
+    width: 100%;
     vertical-align: top;
 }
 
@@ -311,7 +311,7 @@ body {
 
 
 .task_list .item .title {
-    width: 425px;
+    width: 385px;
     color: #666;
 }
 
@@ -320,11 +320,13 @@ body {
 }
 
 .task_list .item .title.del{
+    width: 405px;
     text-decoration: line-through
 }
 
 .task_list .item .date{
     font-size:12px;
+    font-weight:bolder;
 }
 
 .task_list .item .tools {
@@ -351,7 +353,7 @@ body {
 }
 
 .task_list .item span.title.left {
-    padding-left: 25px;
+    padding-left: 23px;
     width: 455px;
 }
 
@@ -444,6 +446,17 @@ body {
 .ivu-input {
     font-size: 14px
 }
+.ivu-form-item-error .ivu-input,.ivu-form-item-error .ivu-select-selection{
+    border-color:#ed4014!important;
+}
+
+.ivu-form-item{
+    margin-bottom:0;
+}
+
+.ivu-form-item-content{
+    padding-left:5px;
+}
 
 .ivu-date-picker-cells-focused em {
     -webkit-box-shadow: 0 0 0 1px @primary_color inset;
@@ -454,4 +467,11 @@ body {
 .ivu-date-picker-cells-cell-selected em,
 .ivu-date-picker-cells-cell-selected:hover em {
     background: @primary_color
+}
+.ivu-picker-panel-shortcut{
+    font-size:12px;
+}
+
+.ivu-picker-confirm .ivu-btn-default{
+    display: none;
 }

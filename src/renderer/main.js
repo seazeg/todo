@@ -7,8 +7,9 @@ import moment from 'moment'
 import {local} from './libs/local'
 import './components/index'
 import store from './store/index'
+import VueDND from 'awe-dnd'
 
-
+Vue.use(VueDND)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 // Vue.prototype.egUtils = egUtils
