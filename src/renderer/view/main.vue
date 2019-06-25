@@ -198,25 +198,33 @@
           disabledDate(date) {
             return date && date.valueOf() < Date.now() - 86400000;
           },
-          shortcuts: [{
-              text: '今天',
-              value() {
-                return new Date();
-              }
-            },
+          shortcuts: [
             {
-              text: '明天',
+              text: '1天后',
               value() {
                 const date = new Date();
-                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                date.setTime(date.getTime() + 3600 * 24 * 1000);
                 return date;
               }
-            },
-            {
-              text: '一周',
+            }, {
+              text: '1小时后',
               value() {
                 const date = new Date();
-                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                date.setTime(date.getTime() + 3600 * 1000);
+                return date;
+              }
+            }, {
+              text: '30分钟后',
+              value() {
+                const date = new Date();
+                date.setTime(date.getTime() + 1800 * 1000);
+                return date;
+              }
+            }, {
+              text: '10分钟后',
+              value() {
+                const date = new Date();
+                date.setTime(date.getTime() + 600 * 1000);
                 return date;
               }
             }
