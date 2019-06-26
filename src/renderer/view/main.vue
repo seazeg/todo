@@ -157,7 +157,7 @@
                         </Col>
                       </Row>
                     </div>
-                    <span class="button" @click="editTask(index,'editValidate' + index)">修改</span>
+                    <span class="button" @click="editTask(index,'editValidate' + index,item)">修改</span>
                   </Form>
                 </div>
               </Modal>
@@ -195,6 +195,9 @@
   import {
     local
   } from '../libs/local'
+  import {
+    guid
+  } from '../libs/utils'
   let thisEditTask = {}
   export default {
     data() {
@@ -300,6 +303,13 @@
             value() {
               const date = new Date();
               date.setTime(date.getTime() + 600 * 1000);
+              return date;
+            }
+          }, {
+            text: '1分钟后',
+            value() {
+              const date = new Date();
+              date.setTime(date.getTime() + 60 * 1000);
               return date;
             }
           }]
@@ -440,15 +450,17 @@
               times = _this.listValidate.thisTimes,
               category = _this.listValidate.thisTasktype,
               isShow = false,
-              taskType = _this.checkedTaskType
+              taskType = _this.checkedTaskType,
+              id = guid()
 
             if (taskType == '全部' || taskType == category) {
               isShow = true
             }
             _this.todolist.unshift({
+              id: id,
               title: title,
               category: category,
-              remindDate: date,
+              remindDate: _this.$moment(date).format('YYYY-MM-DD HH:mm'),
               times: times,
               status: 0,
               checked: false,
@@ -464,7 +476,12 @@
             _this.listValidate.thisTimes = ""
             _this.listValidate.thisTasktype = ""
             _this.$refs.addTask_modal.close();
-            ipcRenderer.send('asynchronous-message', date)
+            //开启定时任务
+            ipcRenderer.send('timedTask-message', {
+              id: id,
+              title: title,
+              date: _this.$moment(date).format('YYYY-MM-DD HH:mm')
+            })
           }
         });
         _this.$refs[name].resetFields();
@@ -492,13 +509,19 @@
         }
       },
       //编辑任务
-      editTask(index, name) {
+      editTask(index, name, item) {
         let _this = this;
-        console.log(name);
         _this.$refs[name][0].validate((valid) => {
           if (valid) {
             _this.$refs['editTask_modal' + index][0].visible = false;
             _this.updateNum();
+            //重置定时任务时间
+            ipcRenderer.send('timedTask-message', {
+              id: item.id,
+              title: item.title,
+              date: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm')
+            })
+
           }
         });
       },
@@ -677,6 +700,21 @@
         } else {}
 
         return res;
+      },
+      getTaskResult() {
+        let _this = this;
+        ipcRenderer.on('timedTask-reply', (event, arg) => {
+          _this.$Notice.success({
+            title: 'Notification title',
+            render: h => {
+              return h('span', [
+                'This is created by ',
+                h('a', 'render'),
+                ' function'
+              ])
+            }
+          });
+        })
       }
     },
     watch: {
@@ -702,6 +740,7 @@
       this.showList(this.menuList[0])
       this.updateNum();
       this.syncTasktypeList();
+      this.getTaskResult();
     }
   }
 </script>

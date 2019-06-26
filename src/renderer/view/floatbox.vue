@@ -69,8 +69,8 @@
                 }
             },
             getTaskResult() {
-                ipcRenderer.on('asynchronous-reply', (event, arg) => {
-                    console.log(arg) // prints "pong"
+                ipcRenderer.on('timedTask-reply', (event, arg) => {
+                    console.log('完成：',arg) // prints "pong"
                 })
             }
         },
@@ -84,7 +84,7 @@
                 }
             })
             _this.initTaskNum();
-
+            // _this.getTaskResult();
 
 
 

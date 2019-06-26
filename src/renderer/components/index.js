@@ -17,7 +17,8 @@ import {
     Form,
     FormItem,
     Row,
-    Col
+    Col,
+    Notice
 } from 'iview';
 
 
@@ -40,5 +41,7 @@ Vue.component('FormItem',FormItem)
 Vue.component('Row',Row)
 Vue.component('Col',Col)
 
+
 Vue.prototype.$Message = Message
 Vue.prototype.$Modal = Modal
+Vue.prototype.$Notice = Notice
