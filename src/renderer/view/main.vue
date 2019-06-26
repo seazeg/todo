@@ -464,6 +464,7 @@
             _this.listValidate.thisTimes = ""
             _this.listValidate.thisTasktype = ""
             _this.$refs.addTask_modal.close();
+            ipcRenderer.send('asynchronous-message', date)
           }
         });
         _this.$refs[name].resetFields();

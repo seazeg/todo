@@ -46,16 +46,6 @@
                     setTimeout(() => {
                         _this.open = true;
                     }, 100);
-
-
-                    ipcRenderer.on('asynchronous-reply', (event, arg) => {
-                        console.log(arg) // prints "pong"
-                    })
-                    ipcRenderer.send('asynchronous-message', '2019-6-25 18:20')
-
-
-
-
                 }
             },
             switchView(path) {
@@ -77,6 +67,11 @@
                         this.$store.commit('setTaskNum', temp['全部']);
                     }
                 }
+            },
+            getTaskResult() {
+                ipcRenderer.on('asynchronous-reply', (event, arg) => {
+                    console.log(arg) // prints "pong"
+                })
             }
         },
         mounted() {
