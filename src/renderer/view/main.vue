@@ -122,7 +122,7 @@
               <!-- 编辑弹层 -->
 
               <Modal class="addType" fullscreen title="编辑事项" :ref="'editTask_modal'+index" @on-cancel="editTaskClose"
-                footer-hide>
+                footer-hide v-if="!item.isRecover&&item.status==0">
                 <div class="content mt">
                   <Form :ref="'editValidate'+index" :model="item" :rules="editRuleValidate">
                     <FormItem prop="title" :show-message="false">

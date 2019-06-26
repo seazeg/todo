@@ -5,6 +5,8 @@ import {
   ipcMain
 } from 'electron'
 
+import './timer'
+
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -146,6 +148,20 @@ ipcMain.on('openMainWin', function (e, arg) {
     });
   }
 });
+
+//打开气泡窗口
+// ipcMain.on('openMainWin', function (e, arg) {
+//   if (arg) {
+//     let x = floatBox.getBounds().x,
+//       y = floatBox.getBounds().y;
+//     floatBox.setBounds({
+//       x: x,
+//       y: y,
+//       width: 300,
+//       height: 80
+//     });
+//   }
+// });
 
 //判断mode模式
 ipcMain.on('modeStatus', function (e, arg) {
