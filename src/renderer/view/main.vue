@@ -202,6 +202,8 @@
   export default {
     data() {
       return {
+        selectTime:"",
+        TASKID:"",
         typeValidate: {
           addType: ""
         },
@@ -258,20 +260,33 @@
           label: "本周"
         }],
         timesList: [{
-          value: "10",
-          label: "10分钟"
-        }, {
-          value: "30",
-          label: "30分钟"
-        }, {
-          value: "60",
-          label: "每小时"
-        }, {
-          value: "24",
+          value:"one",
+          label:"单次"
+        },{
+          value: "work",
+          label: "工作日"
+        },{
+          value: "day",
           label: "每天"
         }, {
-          value: "720",
+          value: "week",
+          label: "每周"
+        }, {
+          value: "month",
           label: "每月"
+        }],
+        postTimeList:[{
+          value: 600 * 1000,
+          label: "10分钟"
+        }, {
+          value: 1800 * 1000,
+          label: "30分钟"
+        }, {
+          value: 3600 * 1000,
+          label: "1小时"
+        }, {
+          value: 3600 * 24 * 1000,
+          label: "1天"
         }],
         dateOption: {
           disabledDate(date) {
@@ -534,10 +549,6 @@
         _this.$set(todo, 'category', item.category)
         _this.$set(todo, 'remindDate', item.remindDate)
         _this.$set(todo, 'times', item.times)
-        // _this.$nextTick(function () {
-        //   _this.$set(todo, 'editVisible', false)
-        //   _this.$forceUpdate();
-        // });
       },
       //删除任务
       removeTask(obj) {
@@ -701,20 +712,62 @@
 
         return res;
       },
+      //接受定时任务完成信息
       getTaskResult() {
         let _this = this;
-        ipcRenderer.on('timedTask-reply', (event, arg) => {
-          _this.$Notice.success({
-            title: 'Notification title',
-            render: h => {
-              return h('span', [
-                'This is created by ',
-                h('a', 'render'),
-                ' function'
-              ])
+        ipcRenderer.on('timedTask-reply', (event, arg) => {  
+          let task = JSON.parse(arg);
+          _this.TASKID = task.id
+          _this.$Notice.open({
+            title: `事项名称：${task.title}`,
+            duration:0,
+            name:task.id,
+            render(h){
+              return(
+                <div class="noticebox">
+                  <span class="button over" onclick="VIEWMAIN.closeNotice(VIEWMAIN.TASKID)">已完成</span>
+                   <i-select v-model={VIEWMAIN.selectTime} class="button" placeholder="推迟">
+                     {
+                        VIEWMAIN.postTimeList.map(item => {
+                            return <i-option data-item={JSON.stringify(task)} data-ov={item.value} value={item.value} key={item.value} onclick="VIEWMAIN.postTimeHanldle($(this).attr('data-item'),$(this).attr('data-ov'))">{item.label}</i-option>
+                        })
+                   }
+                   </i-select>
+                </div>
+              )
             }
           });
         })
+      },
+      //关闭通知
+      closeNotice(id){
+        let _this = this
+        _this.$Notice.close(id);
+        for(let item of _this.todolist){
+          if(item.id == id){
+            item.status = 1;
+            item.checked = true;
+          }
+        }
+        _this.updateNum();
+    
+      },
+      postTimeHanldle(obj,time){
+          let _this = this;
+          let item = JSON.parse(obj);
+          let date = _this.$moment(new Date()).valueOf();
+          let postTime = _this.$moment(date + Number(time)).format('YYYY-MM-DD HH:mm')
+          for(let i of _this.todolist){
+            if(i.id == item.id){
+              i.remindDate = postTime
+            }
+          }
+          ipcRenderer.send('timedTask-message', {
+              id: item.id,
+              title: item.title,
+              date: postTime
+          })
+           _this.$Notice.close(item.id);
       }
     },
     watch: {
@@ -741,6 +794,27 @@
       this.updateNum();
       this.syncTasktypeList();
       this.getTaskResult();
+      global.VIEWMAIN = this;
+  // this.$Notice.open({
+  //           title: `事项名称：`,
+  //           duration:0,
+  //           name:'task.id',
+  //           render(h){
+  //             return(
+  //                <div class="noticebox">
+  //                 <span class="button over" onclick="VIEWMAIN.closeNotice(VIEWMAIN.TASKID)">已完成</span>
+  //                  <i-select v-model={VIEWMAIN.todolist[0].times} class="button" >
+  //                    {
+  //                       VIEWMAIN.postTimeList.map(item => {
+  //                           return <i-option data-item={JSON.stringify(item)} data-ov={item.value} value={item.value} key={item.value} onclick="VIEWMAIN.postTime($(this).attr('data-item'),$(this).attr('data-ov'))">{item.label}</i-option>
+  //                       })
+  //                  }
+  //                  </i-select>
+  //               </div>
+  //             )
+  //           }
+  //         });
     }
   }
 </script>
+

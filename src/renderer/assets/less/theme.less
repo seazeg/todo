@@ -31,6 +31,7 @@ body {
     border-radius: 3px;
 }
 
+
 .button:hover {
     background: @primary_color - 20
 }
@@ -118,22 +119,23 @@ body {
 }
 
 
-.head_tools{
+.head_tools {
     position: absolute;
     bottom: 20px;
     left: 15px;
 }
-.head_tools i{
-    color:#b6b6b6;
-    font-size:24px;
+
+.head_tools i {
+    color: #b6b6b6;
+    font-size: 24px;
     margin-top: 5px;
     display: inline-block;
-    margin-right:20px;
+    margin-right: 20px;
     cursor: pointer;
 }
 
-.head_tools i.selected{
-    color:@primary_color;
+.head_tools i.selected {
+    color: @primary_color;
 }
 
 .filter .item {
@@ -227,8 +229,8 @@ body {
     text-align: left;
 }
 
-.addType .content .ivu-select-single .ivu-select-selection .ivu-select-placeholder{
-    font-size:14px!important;
+.addType .content .ivu-select-single .ivu-select-selection .ivu-select-placeholder {
+    font-size: 14px !important;
 }
 
 .tools {
@@ -319,14 +321,14 @@ body {
     color: @primary_color
 }
 
-.task_list .item .title.del{
+.task_list .item .title.del {
     width: 405px;
     text-decoration: line-through
 }
 
-.task_list .item .date{
-    font-size:12px;
-    font-weight:bolder;
+.task_list .item .date {
+    font-size: 12px;
+    font-weight: bolder;
 }
 
 .task_list .item .tools {
@@ -378,12 +380,57 @@ body {
 
 .tash_over i {
     padding: 0 5px;
-    font-size:14px;
+    font-size: 14px;
 }
 
 .tash_over span:hover {
     background: #555;
 }
+
+
+.noticebox {
+    text-align: center;
+}
+
+.noticebox .button {
+    display: inline-block;
+    width: 50%;
+    height: 35px;
+    line-height: 35px;
+    font-size: 12px;
+    color: @primary_color;
+    cursor: pointer;
+    border-top: 1px solid @primary_color;
+    background: @sub_color;
+    border-radius: 0;
+    font-weight: bolder;
+    vertical-align: top
+}
+
+.noticebox .button.over {
+    background: @primary_color;
+    color:@sub_color
+}
+
+.noticebox .button:last-child {
+    border-left: 1px solid @primary_color;
+}
+
+.noticebox .button.over:hover{
+    background:@primary_color - 20
+}
+
+.noticebox .ivu-select-selection {
+    border: none;
+}
+
+.noticebox .ivu-select-single .ivu-select-selection .ivu-select-placeholder,.noticebox .ivu-select-single .ivu-select-selection .ivu-select-selected-value {
+    height: 35px;
+    line-height: 35px;
+    color: @primary_color;
+}
+
+
 
 
 //iview样式重绘
@@ -418,7 +465,7 @@ body {
 
 }
 
-.ivu-select-single .ivu-select-selection .ivu-select-selected-value{
+.ivu-select-single .ivu-select-selection .ivu-select-selected-value {
     font-size: 14px !important;
 }
 
@@ -446,16 +493,18 @@ body {
 .ivu-input {
     font-size: 14px
 }
-.ivu-form-item-error .ivu-input,.ivu-form-item-error .ivu-select-selection{
-    border-color:#ed4014!important;
+
+.ivu-form-item-error .ivu-input,
+.ivu-form-item-error .ivu-select-selection {
+    border-color: #ed4014 !important;
 }
 
-.ivu-form-item{
-    margin-bottom:0;
+.ivu-form-item {
+    margin-bottom: 0;
 }
 
-.ivu-form-item-content{
-    padding-left:5px;
+.ivu-form-item-content {
+    padding-left: 5px;
 }
 
 .ivu-date-picker-cells-focused em {
@@ -468,10 +517,32 @@ body {
 .ivu-date-picker-cells-cell-selected:hover em {
     background: @primary_color
 }
-.ivu-picker-panel-shortcut{
-    font-size:12px;
+
+.ivu-picker-panel-shortcut {
+    font-size: 12px;
 }
 
-.ivu-picker-confirm .ivu-btn-default{
+.ivu-picker-confirm .ivu-btn-default {
     display: none;
+}
+
+.ivu-notice-notice {
+    padding: 0;
+}
+
+.ivu-notice-with-desc .ivu-notice-title {
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.ivu-notice-notice-close {
+    display: none;
+}
+
+.ivu-notice-custom-content {
+    padding: 20px;
+}
+
+.ivu-notice-notice {
+    overflow: inherit
 }

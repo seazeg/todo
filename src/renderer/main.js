@@ -9,12 +9,13 @@ import './components/index'
 import store from './store/index'
 import VueDND from 'awe-dnd'
 
+
+
 Vue.use(VueDND)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 // Vue.prototype.egUtils = egUtils
 Vue.prototype.$moment = moment;
-
 
 local.initData();
 

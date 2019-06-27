@@ -3,7 +3,6 @@
   "env": {
     "main": {
       "presets": [
-        ["@vue/babel-preset-jsx"],
         ["env", {
           "targets": {
             "node": 7
@@ -14,7 +13,6 @@
     },
     "renderer": {
       "presets": [
-        ["@vue/babel-preset-jsx"],
         ["env", {
           "modules": false
         }],
@@ -23,7 +21,6 @@
     },
     "web": {
       "presets": [
-        ["@vue/babel-preset-jsx"],
         ["env", {
           "modules": false
         }],
@@ -35,6 +32,6 @@
     ["import", {
       "libraryName": "iview",
       "libraryDirectory": "src/components"
-    }], "transform-runtime"
+    }], "transform-runtime", ["transform-vue-jsx","jsx-v-model"]
   ]
 }

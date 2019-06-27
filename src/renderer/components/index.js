@@ -5,6 +5,12 @@ import container from './layout-container.vue'
 import side from './layout-side.vue'
 import main from './layout-main.vue'
 
+Vue.component(header.name, header);
+Vue.component(container.name, container);
+Vue.component(side.name, side);
+Vue.component(main.name, main);
+
+
 import {
     Input,
     DatePicker,
@@ -12,7 +18,6 @@ import {
     Message,
     Select,
     Option,
-    OptionGroup,
     Modal,
     Form,
     FormItem,
@@ -24,17 +29,13 @@ import {
 
 
 
-Vue.component(header.name, header);
-Vue.component(container.name, container);
-Vue.component(side.name, side);
-Vue.component(main.name, main);
-
 Vue.component('Input', Input);
 Vue.component('DatePicker', DatePicker);
 Vue.component('Checkbox', Checkbox);
 Vue.component('Select',Select)
+Vue.component('i-select',Select)
 Vue.component('Option',Option)
-Vue.component('OptionGroup',OptionGroup)
+Vue.component('i-option',Option)
 Vue.component('Modal',Modal)
 Vue.component('Form',Form)
 Vue.component('FormItem',FormItem)

@@ -87,7 +87,6 @@
             // _this.getTaskResult();
 
 
-
         }
     }
 </script>
