@@ -6,7 +6,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/floatbox',
       name: 'floatbox',
       component: require('@/view/floatbox').default,
       meta:{
@@ -23,7 +23,7 @@ export default new Router({
     },
     {
       path: '*',
-      redirect: '/'
+      redirect: '/floatbox'
     }
   ]
 })

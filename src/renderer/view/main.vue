@@ -545,10 +545,12 @@
         let item = thisEditTask;
         let _this = this;
         let todo = _this.todolist[item.index]
-        _this.$set(todo, 'title', item.title);
-        _this.$set(todo, 'category', item.category)
-        _this.$set(todo, 'remindDate', item.remindDate)
-        _this.$set(todo, 'times', item.times)
+        if(todo){
+          _this.$set(todo, 'title', item.title);
+          _this.$set(todo, 'category', item.category)
+          _this.$set(todo, 'remindDate', item.remindDate)
+          _this.$set(todo, 'times', item.times)
+        }
       },
       //删除任务
       removeTask(obj) {
@@ -790,30 +792,33 @@
       this.todolist = JSON.parse(local.getData('todolist'));
     },
     mounted() {
-      this.showList(this.menuList[0])
-      this.updateNum();
-      this.syncTasktypeList();
-      this.getTaskResult();
-      global.VIEWMAIN = this;
-  // this.$Notice.open({
-  //           title: `事项名称：`,
-  //           duration:0,
-  //           name:'task.id',
-  //           render(h){
-  //             return(
-  //                <div class="noticebox">
-  //                 <span class="button over" onclick="VIEWMAIN.closeNotice(VIEWMAIN.TASKID)">已完成</span>
-  //                  <i-select v-model={VIEWMAIN.todolist[0].times} class="button" >
-  //                    {
-  //                       VIEWMAIN.postTimeList.map(item => {
-  //                           return <i-option data-item={JSON.stringify(item)} data-ov={item.value} value={item.value} key={item.value} onclick="VIEWMAIN.postTime($(this).attr('data-item'),$(this).attr('data-ov'))">{item.label}</i-option>
-  //                       })
-  //                  }
-  //                  </i-select>
-  //               </div>
-  //             )
-  //           }
-  //         });
+      let _this = this
+      _this.showList(_this.menuList[0])
+      _this.updateNum();
+      _this.syncTasktypeList();
+      _this.getTaskResult();
+      global.VIEWMAIN = _this;
+
+      ipcRenderer.on('closeMainWin', function (e, arg) {  
+        if (arg) {
+            //重置所有弹层的状态 start
+            _this.$store.commit('setIsOpen', false);
+            _this.addTypeClose('typeValidate')
+            _this.$refs.addType_modal.close();
+            _this.editTaskClose();
+            for(let m in _this.$refs){
+              if(m.includes('editTask_modal')){
+                  _this.$refs[m][0].visible = false;
+              }
+            }
+            _this.addTaskClose('listValidate')
+            _this.$refs.addTask_modal.close();
+            //重置所有弹层的状态 end
+            _this.$router.push({
+                path:'floatbox'
+            })
+        }
+      })  
     }
   }
 </script>

@@ -1,10 +1,14 @@
 const state = {
-  taskNum: 1
+  taskNum: 1,
+  isOpen:false
 }
 
 const mutations = {
   setTaskNum(state, num) {
     state.taskNum = num
+  },
+  setIsOpen(state, bool) {
+    state.isOpen = bool
   }
 }
 
@@ -13,6 +17,11 @@ const actions = {
     commit
   }) {
     commit('setTaskNum', num)
+  },
+  setIsOpen({
+    commit
+  }) {
+    commit('setIsOpen', bool)
   }
 }
 

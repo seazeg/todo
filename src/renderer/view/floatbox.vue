@@ -1,5 +1,5 @@
 <template>
-    <div class="floatbox" :class="{'open':open}" @mouseup.prevent="mouseup($event)"
+    <div class="floatbox" :class="{'open':isOpen}" @mouseup.prevent="mouseup($event)"
         @mousedown.prevent="mousedown($event)">
         <span>{{taskNum}}</span>
     </div>
@@ -15,7 +15,6 @@
     export default {
         data() {
             return {
-                open: false,
                 isMoving: false,
                 x1: 0,
                 y1: 0,
@@ -26,6 +25,9 @@
         computed: {
             taskNum: function () {
                 return this.$store.state.Counter.taskNum
+            },
+            isOpen:function(){
+                 return this.$store.state.Counter.isOpen
             }
         },
         methods: {
@@ -44,7 +46,7 @@
                     ipcRenderer.send('openMainWin', true);
                     _this.switchView('main');
                     setTimeout(() => {
-                        _this.open = true;
+                        _this.$store.commit('setIsOpen', true);
                     }, 100);
                 }
             },
@@ -75,18 +77,9 @@
             }
         },
         mounted() {
-            let _this = this
-            ipcRenderer.on('closeMainWin', function (e, arg) {
-                console.log(arg);
-                if (arg) {
-                    _this.open = false;
-                    _this.switchView('/');
-                }
-            })
+            let _this = this;
             _this.initTaskNum();
-            // _this.getTaskResult();
-
-
+            _this.getTaskResult();
         }
     }
 </script>
