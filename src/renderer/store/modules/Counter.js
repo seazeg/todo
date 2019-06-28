@@ -1,6 +1,7 @@
 const state = {
   taskNum: 1,
-  isOpen:false
+  isOpen:false,
+  modeStatus:false
 }
 
 const mutations = {
@@ -9,6 +10,9 @@ const mutations = {
   },
   setIsOpen(state, bool) {
     state.isOpen = bool
+  },
+  setModeStatus(state, bool) {
+    state.modeStatus = bool
   }
 }
 
@@ -22,6 +26,11 @@ const actions = {
     commit
   }) {
     commit('setIsOpen', bool)
+  },
+  setModeStatus({
+    commit
+  }) {
+    commit('setModeStatus', bool)
   }
 }
 

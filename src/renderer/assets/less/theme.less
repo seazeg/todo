@@ -45,25 +45,36 @@ body {
 }
 
 
+//悬浮框
+.floatbox_warp {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
 .floatbox {
+
+    // background: linear-gradient(45deg, @main_color, #111, @main_color);
     background: @main_color;
-    border: 1px solid @sub_color;
+    border: 1px solid @font_g_color;
     width: 50px;
     height: 50px;
     border-radius: 10px;
     -webkit-app-region: drag;
-    cursor: default;
+    cursor: pointer;
     transition: all @speed;
     -webkit-transition: all @speed;
+
 }
 
 .floatbox span {
-    color: @font_w_color;
+    color: @font_g_color;
     text-align: center;
     width: 100%;
     line-height: 50px;
     display: block;
-    font-size: 12px;
+    font-size: 24px;
+    font-family: fantasy
 }
 
 .floatbox.open {
@@ -73,8 +84,71 @@ body {
     -webkit-transition: all @speed;
 }
 
+.floatbox:hover {
+    // background: linear-gradient(45deg, #111, #000, #111);
+    background: #000;
+    transition: all @speed;
+    -webkit-transition: all @speed;
+}
+
+.bubblebox {
+    position: absolute;
+    width: 230px;
+    left: 55px;
+    top: 1px;
+    font-size: 0;
+    background: #f0f0f0;
+    border-radius: 5px;
+    // border:1px solid @primary_color
+}
+
+.bubblebox .name {
+    display: inline-block;
+    height: 48px;
+    width: 70%;
+    font-size: 12px;
+    vertical-align: top;
+    line-height: 48px;
+    padding: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bubblebox>.group {
+    display: inline-block;
+    height: 48px;
+    width: 30%;
+    vertical-align: top;
+    text-align: center;
+    border-left: 1px solid @primary_color
+}
+
+.bubblebox>.group span {
+    font-size: 12px;
+    line-height: 24px;
+    height: 24px;
+    display: block;
+    font-weight: bolder;
+}
+
+.bubblebox>.group span.over {
+    background: @primary_color;
+    color: @font_w_color;
+    border-top-right-radius: 5px;
+}
+
+.bubblebox>.group span.post {
+    border-bottom-right-radius: 5px;
+    color: @primary_color
+}
+
+.bubblebox>.group span.over:hover {
+    background: @primary_color - 20
+}
 
 
+//布局
 .layout-container {
     height: 100%;
     display: flex;
@@ -409,22 +483,23 @@ body {
 
 .noticebox .button.over {
     background: @primary_color;
-    color:@sub_color
+    color: @sub_color
 }
 
 .noticebox .button:last-child {
     border-left: 1px solid @primary_color;
 }
 
-.noticebox .button.over:hover{
-    background:@primary_color - 20
+.noticebox .button.over:hover {
+    background: @primary_color - 20
 }
 
 .noticebox .ivu-select-selection {
     border: none;
 }
 
-.noticebox .ivu-select-single .ivu-select-selection .ivu-select-placeholder,.noticebox .ivu-select-single .ivu-select-selection .ivu-select-selected-value {
+.noticebox .ivu-select-single .ivu-select-selection .ivu-select-placeholder,
+.noticebox .ivu-select-single .ivu-select-selection .ivu-select-selected-value {
     height: 35px;
     line-height: 35px;
     color: @primary_color;

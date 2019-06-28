@@ -238,7 +238,6 @@
             required: true
           }]
         },
-        modeStatus: false,
         searchKey: "",
         isTask: false,
         isAddType: false,
@@ -331,9 +330,17 @@
         }
       }
     },
+    computed: {
+        isWinOpen:function(){
+          return this.$store.state.Counter.isOpen
+        },
+        modeStatus:function(){
+          return this.$store.state.Counter.modeStatus
+        }
+    },
     methods: {
       changeMode() {
-        this.modeStatus = !this.modeStatus
+        this.modeStatus = this.$store.commit('setModeStatus',!this.modeStatus);
         ipcRenderer.send('modeStatus', this.modeStatus);
       },
       showList(obj) {
@@ -720,25 +727,27 @@
         ipcRenderer.on('timedTask-reply', (event, arg) => {  
           let task = JSON.parse(arg);
           _this.TASKID = task.id
-          _this.$Notice.open({
-            title: `事项名称：${task.title}`,
-            duration:0,
-            name:task.id,
-            render(h){
-              return(
-                <div class="noticebox">
-                  <span class="button over" onclick="VIEWMAIN.closeNotice(VIEWMAIN.TASKID)">已完成</span>
-                   <i-select v-model={VIEWMAIN.selectTime} class="button" placeholder="推迟">
-                     {
-                        VIEWMAIN.postTimeList.map(item => {
-                            return <i-option data-item={JSON.stringify(task)} data-ov={item.value} value={item.value} key={item.value} onclick="VIEWMAIN.postTimeHanldle($(this).attr('data-item'),$(this).attr('data-ov'))">{item.label}</i-option>
-                        })
-                   }
-                   </i-select>
-                </div>
-              )
-            }
-          });
+          if(_this.isWinOpen){
+            _this.$Notice.open({
+              title: `事项名称：${task.title}`,
+              duration:0,
+              name:task.id,
+              render(h){
+                return(
+                  <div class="noticebox">
+                    <span class="button over" onclick="VIEWMAIN.closeNotice(VIEWMAIN.TASKID)">已完成</span>
+                    <i-select v-model={VIEWMAIN.selectTime} class="button" placeholder="推迟">
+                      {
+                          VIEWMAIN.postTimeList.map(item => {
+                              return <i-option data-item={JSON.stringify(task)} data-ov={item.value} value={item.value} key={item.value} onclick="VIEWMAIN.postTimeHanldle($(this).attr('data-item'),$(this).attr('data-ov'))">{item.label}</i-option>
+                          })
+                    }
+                    </i-select>
+                  </div>
+                )
+              }
+            });
+          }
         })
       },
       //关闭通知

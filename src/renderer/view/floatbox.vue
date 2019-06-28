@@ -1,10 +1,18 @@
 <template>
-    <div class="floatbox" :class="{'open':isOpen}" @mouseup.prevent="mouseup($event)"
-        @mousedown.prevent="mousedown($event)">
-        <span>{{taskNum}}</span>
+    <div class="floatbox_warp">
+        <div class="floatbox" :class="{'open':isWinOpen}" @mouseup.prevent="mouseup($event)"
+            @mousedown.prevent="mousedown($event)">
+            <span>{{taskNum}}</span>
+        </div>
+        <div class="bubblebox">
+            <div class="name">任务完成</div>
+            <div class="group">
+                <span class="over">已完成</span>
+                <span class="post">推迟</span>
+            </div>
+        </div>
     </div>
 </template>
-
 <script>
     import {
         ipcRenderer
@@ -15,6 +23,7 @@
     export default {
         data() {
             return {
+                modeStatus: false,
                 isMoving: false,
                 x1: 0,
                 y1: 0,
@@ -26,8 +35,11 @@
             taskNum: function () {
                 return this.$store.state.Counter.taskNum
             },
-            isOpen:function(){
-                 return this.$store.state.Counter.isOpen
+            isWinOpen: function () {
+                return this.$store.state.Counter.isOpen
+            },
+            modeStatus: function () {
+                return this.$store.state.Counter.modeStatus
             }
         },
         methods: {
@@ -71,8 +83,12 @@
                 }
             },
             getTaskResult() {
+                let _this = this
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
-                    console.log('完成：',arg) // prints "pong"
+                    if (!_this.isWinOpen) {
+                        ipcRenderer.send('openBubbleWin', true);
+                        console.log('完成：', arg)
+                    }
                 })
             }
         },
@@ -80,6 +96,13 @@
             let _this = this;
             _this.initTaskNum();
             _this.getTaskResult();
+
+
+
+            ipcRenderer.send('openBubbleWin', true);
+
+            ipcRenderer.send('modeStatus', true);
+            // _this.modeStatus 
         }
     }
 </script>

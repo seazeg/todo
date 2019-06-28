@@ -23,7 +23,8 @@ import {
     FormItem,
     Row,
     Col,
-    Notice
+    Notice,
+    Badge
 } from 'iview';
 
 
@@ -41,7 +42,7 @@ Vue.component('Form',Form)
 Vue.component('FormItem',FormItem)
 Vue.component('Row',Row)
 Vue.component('Col',Col)
-
+Vue.component('Badge',Badge)
 
 Vue.prototype.$Message = Message
 Vue.prototype.$Modal = Modal
