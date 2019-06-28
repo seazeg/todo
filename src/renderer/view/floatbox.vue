@@ -4,13 +4,15 @@
             @mousedown.prevent="mousedown($event)">
             <span>{{taskNum}}</span>
         </div>
-        <div class="bubblebox">
-            <div class="name">任务完成</div>
+       <div v-for="(item,index) in bubble" :key="'notice' + index">
+            <div class="bubblebox">
+            <div class="name">{{item.title}}</div>
             <div class="group">
-                <span class="over">已完成</span>
+                <span class="over" @click="closeNotice(item.id)">已完成</span>
                 <span class="post">推迟</span>
             </div>
         </div>
+       </div>
     </div>
 </template>
 <script>
@@ -23,12 +25,15 @@
     export default {
         data() {
             return {
-                modeStatus: false,
                 isMoving: false,
                 x1: 0,
                 y1: 0,
                 x2: 0,
-                y2: 0
+                y2: 0,
+                bubble:[{
+                    id:'',
+                    title:'任务完成',
+                }]
             }
         },
         computed: {
@@ -87,8 +92,39 @@
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
                     if (!_this.isWinOpen) {
                         ipcRenderer.send('openBubbleWin', true);
-                        console.log('完成：', arg)
+                        let task = JSON.parse(arg);
+                        _this.bubble.push({
+                            id:task.id,
+                            title:task.title
+                        })
+                        console.log('完成：', task)
                     }
+                })
+            },
+            closeNotice(id) {
+                let _this = this
+                for (let item of _this.todolist) {
+                    if (item.id == id) {
+                        item.status = 1;
+                        item.checked = true;
+                    }
+                }
+                _this.updateNum();
+            },
+            postTimeHanldle(obj, time) {
+                let _this = this;
+                let item = JSON.parse(obj);
+                let date = _this.$moment(new Date()).valueOf();
+                let postTime = _this.$moment(date + Number(time)).format('YYYY-MM-DD HH:mm')
+                for (let i of _this.todolist) {
+                    if (i.id == item.id) {
+                        i.remindDate = postTime
+                    }
+                }
+                ipcRenderer.send('timedTask-message', {
+                    id: item.id,
+                    title: item.title,
+                    date: postTime
                 })
             }
         },

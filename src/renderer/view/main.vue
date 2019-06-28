@@ -80,15 +80,7 @@
                       :transfer="true" ref="datetime" :editable="false"></DatePicker>
                   </FormItem>
                   </Col>
-                  <Col span="6">
-                  <FormItem prop="thisTimes" :show-message="false">
-                    <Select v-model="listValidate.thisTimes" class="select" placeholder="选择频率">
-                      <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
-                      </Option>
-                    </Select>
-                  </FormItem>
-                  </Col>
-                  <Col span="6">
+                  <Col span="12">
                   <FormItem prop="thisTasktype" :show-message="false">
                     <Select v-model="listValidate.thisTasktype" class="select" placeholder="选择分类">
                       <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">{{ item.label }}
@@ -138,15 +130,7 @@
                           </DatePicker>
                         </FormItem>
                         </Col>
-                        <Col span="6">
-                        <FormItem prop="times" :show-message="false">
-                          <Select v-model="item.times" class="select" placeholder="选择频率">
-                            <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
-                            </Option>
-                          </Select>
-                        </FormItem>
-                        </Col>
-                        <Col span="6">
+                        <Col span="12">
                         <FormItem prop="category" :show-message="false">
                           <Select v-model="item.category" class="select" placeholder="选择分类">
                             <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">
@@ -215,7 +199,6 @@
         listValidate: {
           taskName: "",
           addDate: "",
-          thisTimes: "",
           thisTasktype: "",
         },
         listRuleValidate: {
@@ -225,9 +208,6 @@
           addDate: [{
             required: true,
             type: 'date'
-          }],
-          thisTimes: [{
-            required: true
           }],
           thisTasktype: [{
             required: true
@@ -246,8 +226,6 @@
         checkedTaskType: '',
         toggleName: "显示已经完成事项",
         tasktypeList: [],
-        menuList: [],
-        todolist: [],
         dateList: [{
           value: "全部",
           label: "全部"
@@ -336,11 +314,18 @@
         },
         modeStatus:function(){
           return this.$store.state.Counter.modeStatus
+        },
+        todolist:function(){
+          return this.$store.state.Counter.todolist
+        },
+        menuList:function(){
+          return this.$store.state.Counter.menuList
         }
     },
     methods: {
       changeMode() {
-        this.modeStatus = this.$store.commit('setModeStatus',!this.modeStatus);
+        this.$store.commit('setModeStatus',!this.modeStatus);
+        console.log(this.modeStatus);
         ipcRenderer.send('modeStatus', this.modeStatus);
       },
       showList(obj) {
@@ -467,9 +452,9 @@
         let _this = this
         _this.$refs[name].validate((valid) => {
           if (valid) {
+            
             let title = _this.listValidate.taskName,
               date = _this.listValidate.addDate,
-              times = _this.listValidate.thisTimes,
               category = _this.listValidate.thisTasktype,
               isShow = false,
               taskType = _this.checkedTaskType,
@@ -483,7 +468,6 @@
               title: title,
               category: category,
               remindDate: _this.$moment(date).format('YYYY-MM-DD HH:mm'),
-              times: times,
               status: 0,
               checked: false,
               isShow: isShow,
@@ -495,7 +479,6 @@
 
             _this.listValidate.taskName = "";
             _this.listValidate.addDate = "";
-            _this.listValidate.thisTimes = ""
             _this.listValidate.thisTasktype = ""
             _this.$refs.addTask_modal.close();
             //开启定时任务
@@ -513,7 +496,6 @@
         let _this = this;
         _this.listValidate.taskName = "";
         _this.listValidate.addDate = "";
-        _this.listValidate.thisTimes = ""
         _this.listValidate.thisTasktype = "";
         _this.$refs[name].resetFields();
       },
@@ -526,7 +508,6 @@
           title: item.title,
           category: item.category,
           remindDate: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm'),
-          times: item.times,
           index: index
         }
       },
@@ -556,7 +537,6 @@
           _this.$set(todo, 'title', item.title);
           _this.$set(todo, 'category', item.category)
           _this.$set(todo, 'remindDate', item.remindDate)
-          _this.$set(todo, 'times', item.times)
         }
       },
       //删除任务
@@ -797,8 +777,8 @@
     },
     created() {
       //本地数据同步
-      this.menuList = JSON.parse(local.getData('menuList'));
-      this.todolist = JSON.parse(local.getData('todolist'));
+      this.$store.commit('setTodolist',JSON.parse(local.getData('todolist')))
+      this.$store.commit('setMenuList',JSON.parse(local.getData('menuList')))
     },
     mounted() {
       let _this = this

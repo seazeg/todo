@@ -1,7 +1,9 @@
 const state = {
   taskNum: 1,
   isOpen:false,
-  modeStatus:false
+  modeStatus:false,
+  todolist:[],
+  menuList:[]
 }
 
 const mutations = {
@@ -13,7 +15,13 @@ const mutations = {
   },
   setModeStatus(state, bool) {
     state.modeStatus = bool
-  }
+  },
+  setTodolist(state, arr) {
+    state.todolist = arr
+  },
+  setMenuList(state, arr) {
+    state.menuList = arr
+  },
 }
 
 const actions = {
@@ -31,6 +39,16 @@ const actions = {
     commit
   }) {
     commit('setModeStatus', bool)
+  },
+  setTodolist({
+    commit
+  }) {
+    commit('setTodolist', arr)
+  },
+  setMenuList({
+    commit
+  }) {
+    commit('setMenuList', arr)
   }
 }
 
