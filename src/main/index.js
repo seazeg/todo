@@ -44,45 +44,52 @@ function moveFn(e, win, param) {
     if (!param.isFloat) {
       e.sender.send('closeMainWin', true);
     }
-    floatBox.setBounds({
-      x: 0,
-      y: y,
-      width: param.w,
-      height: param.h
-    })
-
+    setTimeout(() => {
+      floatBox.setBounds({
+        x: 0,
+        y: y,
+        width: param.w,
+        height: param.h
+      })
+    }, 300);
 
   } else if (x > width - param.w) {
     if (!param.isFloat) {
       e.sender.send('closeMainWin', true);
     }
-    floatBox.setBounds({
-      x: width - param.w,
-      y: y,
-      width: param.w,
-      height: param.h
-    })
+    setTimeout(() => {
+      floatBox.setBounds({
+        x: width - param.w,
+        y: y,
+        width: param.w,
+        height: param.h
+      })
+    }, 300);
   }
   if (y < 0) {
     if (!param.isFloat) {
       e.sender.send('closeMainWin', true);
     }
-    floatBox.setBounds({
-      x: x,
-      y: 0,
-      width: param.w,
-      height: param.h
-    })
+    setTimeout(() => {
+      floatBox.setBounds({
+        x: x,
+        y: 0,
+        width: param.w,
+        height: param.h
+      })
+    }, 300);
   } else if (y > height - param.h) {
     if (!param.isFloat) {
       e.sender.send('closeMainWin', true);
     }
-    floatBox.setBounds({
-      x: x,
-      y: height - param.h,
-      width: param.w,
-      height: param.h
-    })
+    setTimeout(() => {
+      floatBox.setBounds({
+        x: x,
+        y: height - param.h,
+        width: param.w,
+        height: param.h
+      })
+    }, 300);
   }
 }
 
@@ -165,6 +172,7 @@ ipcMain.on('openBubbleWin', function (e, arg) {
 
 //判断mode模式
 ipcMain.on('modeStatus', function (e, arg) {
+  console.log(arg);
   if (arg) {
     floatBox.removeAllListeners();
     floatBox.on('move', (e, cmd) => {

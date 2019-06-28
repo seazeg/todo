@@ -325,7 +325,6 @@
     methods: {
       changeMode() {
         this.$store.commit('setModeStatus',!this.modeStatus);
-        console.log(this.modeStatus);
         ipcRenderer.send('modeStatus', this.modeStatus);
       },
       showList(obj) {
@@ -489,7 +488,6 @@
             })
           }
         });
-        _this.$refs[name].resetFields();
       },
       //关闭弹层回调，重置弹层内容成初始值
       addTaskClose(name) {

@@ -4,15 +4,17 @@
             @mousedown.prevent="mousedown($event)">
             <span>{{taskNum}}</span>
         </div>
-       <div v-for="(item,index) in bubble" :key="'notice' + index">
-            <div class="bubblebox">
-            <div class="name">{{item.title}}</div>
-            <div class="group">
-                <span class="over" @click="closeNotice(item.id)">已完成</span>
-                <span class="post">推迟</span>
+        <transition name="component-fade" mode="out-in">
+            <div v-for="(item,index) in bubble" :key="'notice' + index">
+                <div class="bubblebox">
+                    <div class="name">{{item.title}}</div>
+                    <div class="group">
+                        <span class="over" @click="closeNotice(item.id)">已完成</span>
+                        <span class="post">推迟</span>
+                    </div>
+                </div>
             </div>
-        </div>
-       </div>
+        </transition>
     </div>
 </template>
 <script>
@@ -30,10 +32,7 @@
                 y1: 0,
                 x2: 0,
                 y2: 0,
-                bubble:[{
-                    id:'',
-                    title:'任务完成',
-                }]
+                bubble: []
             }
         },
         computed: {
@@ -45,6 +44,12 @@
             },
             modeStatus: function () {
                 return this.$store.state.Counter.modeStatus
+            },
+            todolist: function () {
+                return this.$store.state.Counter.todolist
+            },
+            menuList: function () {
+                return this.$store.state.Counter.menuList
             }
         },
         methods: {
@@ -92,12 +97,12 @@
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
                     if (!_this.isWinOpen) {
                         ipcRenderer.send('openBubbleWin', true);
+                        ipcRenderer.send('modeStatus', true);
                         let task = JSON.parse(arg);
                         _this.bubble.push({
-                            id:task.id,
-                            title:task.title
+                            id: task.id,
+                            title: task.title
                         })
-                        console.log('完成：', task)
                     }
                 })
             },
@@ -109,7 +114,16 @@
                         item.checked = true;
                     }
                 }
-                _this.updateNum();
+                _this.$store.commit('updateNum')
+                for (let b = 0; b < _this.bubble.length; b++) {
+                    if (_this.bubble[b].id == id) {
+                        _this.bubble.splice(b, 1);
+
+                    }
+                }
+                if(_this.bubble.length<=0){
+                    ipcRenderer.send('modeStatus', false);
+                }
             },
             postTimeHanldle(obj, time) {
                 let _this = this;
@@ -126,19 +140,13 @@
                     title: item.title,
                     date: postTime
                 })
+
             }
         },
         mounted() {
             let _this = this;
             _this.initTaskNum();
             _this.getTaskResult();
-
-
-
-            ipcRenderer.send('openBubbleWin', true);
-
-            ipcRenderer.send('modeStatus', true);
-            // _this.modeStatus 
         }
     }
 </script>
