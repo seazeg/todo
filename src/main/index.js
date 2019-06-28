@@ -165,20 +165,28 @@ ipcMain.on('openBubbleWin', function (e, arg) {
       x: x,
       y: y,
       width: 300,
-      height: 80
+      height: 300
     });
   }
 });
 
 //判断mode模式
 ipcMain.on('modeStatus', function (e, arg) {
-  console.log(arg);
-  if (arg) {
+  if (arg == true) {
     floatBox.removeAllListeners();
     floatBox.on('move', (e, cmd) => {
       moveFn(e, floatBox, {
         w: 800,
         h: 600,
+        isFloat: arg
+      })
+    })
+  } else if (typeof arg == 'string') {
+    floatBox.removeAllListeners();
+    floatBox.on('move', (e, cmd) => {
+      moveFn(e, floatBox, {
+        w: 300,
+        h: 300,
         isFloat: arg
       })
     })

@@ -10,7 +10,9 @@
                     <div class="name">{{item.title}}</div>
                     <div class="group">
                         <span class="over" @click="closeNotice(item.id)">已完成</span>
-                        <span class="post">推迟</span>
+                        <Select v-model="selectTime" class="post" placeholder="推迟" @on-change="postTimeHanldle(item)">
+                            <Option v-for="(o,index) in postTimeList" :value="o.value" :key="o.value" >{{o.label}}</Option>
+                        </Select>
                     </div>
                 </div>
             </div>
@@ -27,11 +29,25 @@
     export default {
         data() {
             return {
+                selectTime:"",
                 isMoving: false,
                 x1: 0,
                 y1: 0,
                 x2: 0,
                 y2: 0,
+                postTimeList: [{
+                    value: 600 * 1000,
+                    label: "10分钟"
+                }, {
+                    value: 1800 * 1000,
+                    label: "30分钟"
+                }, {
+                    value: 3600 * 1000,
+                    label: "1小时"
+                }, {
+                    value: 3600 * 24 * 1000,
+                    label: "1天"
+                }],
                 bubble: []
             }
         },
@@ -97,12 +113,9 @@
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
                     if (!_this.isWinOpen) {
                         ipcRenderer.send('openBubbleWin', true);
-                        ipcRenderer.send('modeStatus', true);
+                        ipcRenderer.send('modeStatus', 'bubble');
                         let task = JSON.parse(arg);
-                        _this.bubble.push({
-                            id: task.id,
-                            title: task.title
-                        })
+                        _this.bubble.push(task)
                     }
                 })
             },
@@ -121,14 +134,15 @@
 
                     }
                 }
-                if(_this.bubble.length<=0){
+                if (_this.bubble.length <= 0) {
                     ipcRenderer.send('modeStatus', false);
                 }
             },
-            postTimeHanldle(obj, time) {
+            postTimeHanldle(obj) {
                 let _this = this;
-                let item = JSON.parse(obj);
+                let item = obj;
                 let date = _this.$moment(new Date()).valueOf();
+                let time = _this.selectTime;
                 let postTime = _this.$moment(date + Number(time)).format('YYYY-MM-DD HH:mm')
                 for (let i of _this.todolist) {
                     if (i.id == item.id) {
@@ -147,6 +161,10 @@
             let _this = this;
             _this.initTaskNum();
             _this.getTaskResult();
+
+            // //开发完成后删
+            // ipcRenderer.send('openBubbleWin', true);
+            // ipcRenderer.send('modeStatus', 'bubble')
         }
     }
 </script>
