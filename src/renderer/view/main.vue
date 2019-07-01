@@ -773,10 +773,6 @@
         deep: true
       }
     },
-    created() {
-      this.$store.commit('setTodolist', local.getData('todolist'))
-      this.$store.commit('setMenuList', local.getData('menuList'))
-    },
     mounted() {
       let _this = this
       _this.showList(_this.menuList[0])

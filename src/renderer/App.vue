@@ -8,10 +8,30 @@
 
 <script>
   import {
+    ipcRenderer
+  } from 'electron'
+  import {
     local
   } from './libs/local'
   export default {
-    name: 'egtime'
+    name: 'egtime',
+    created() {
+      this.$store.commit('setTodolist', local.getData('todolist'))
+      this.$store.commit('setMenuList', local.getData('menuList'))
+    },
+    mounted() {
+      let _this = this
+      let todolist = _this.$store.state.Counter.todolist;
+      for (let item of todolist) {
+        if (item.status == 0) {
+          ipcRenderer.send('timedTask-message', {
+            id: item.id,
+            title: item.title,
+            date: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm')
+          })
+        }
+      }
+    }
   }
 </script>
 <style lang="less">
