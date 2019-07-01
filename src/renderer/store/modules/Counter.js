@@ -1,3 +1,6 @@
+import {local} from '../../libs/local'
+import moment from 'moment'
+
 const state = {
   taskNum: 0,
   isOpen: false,
@@ -17,6 +20,10 @@ const mutations = {
     state.modeStatus = bool
   },
   setTodolist(state, arr) {
+    for(let item of arr){
+      item.remindDate = moment(item.remindDate).format('YYYY-MM-DD HH:mm')
+    }
+    local.setData('todolist',arr)
     state.todolist = arr
   },
   setMenuList(state, arr) {
@@ -49,31 +56,37 @@ const mutations = {
 
 }
 
+
 const actions = {
   setTaskNum({
     commit
   }) {
-    commit('setTaskNum', num)
+    commit('setTaskNum')
   },
   setIsOpen({
     commit
   }) {
-    commit('setIsOpen', bool)
+    commit('setIsOpen')
+  },
+  setIsBubble({
+    commit
+  }) {
+    commit('setIsBubble')
   },
   setModeStatus({
     commit
   }) {
-    commit('setModeStatus', bool)
+    commit('setModeStatus')
   },
   setTodolist({
     commit
   }) {
-    commit('setTodolist', arr)
+    commit('setTodolist')
   },
   setMenuList({
     commit
   }) {
-    commit('setMenuList', arr)
+    commit('setMenuList')
   },
   updateNum({
     commit

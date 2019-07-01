@@ -7,7 +7,7 @@ export const local = {
         localStorage.setItem(jsonName, JSON.stringify(jsonValue))
     },
     getData(jsonName) {
-        return localStorage.getItem(jsonName)
+        return JSON.parse(localStorage.getItem(jsonName))
     },
     initData() {
         if (!this.getData('menuList') && !this.getData('todolist')) {

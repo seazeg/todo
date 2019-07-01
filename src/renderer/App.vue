@@ -7,6 +7,9 @@
 </template>
 
 <script>
+  import {
+    local
+  } from './libs/local'
   export default {
     name: 'egtime'
   }

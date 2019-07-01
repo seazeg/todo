@@ -4,19 +4,20 @@
             @mousedown.prevent="mousedown($event)">
             <span>{{taskNum}}</span>
         </div>
-        <transition name="component-fade" mode="out-in">
-            <div v-for="(item,index) in bubble" :key="'notice' + index">
+        <div v-for="(item,index) in bubble" :key="'notice' + index">
+            <transition name="component-fade" mode="out-in">
                 <div class="bubblebox">
                     <div class="name">{{item.title}}</div>
                     <div class="group">
                         <span class="over" @click="closeNotice(item.id)">已完成</span>
                         <Select v-model="selectTime" class="post" placeholder="推迟" @on-change="postTimeHanldle(item)">
-                            <Option v-for="(o,index) in postTimeList" :value="o.value" :key="o.value" >{{o.label}}</Option>
+                            <Option v-for="(o,index) in postTimeList" :value="o.value" :key="o.value">{{o.label}}
+                            </Option>
                         </Select>
                     </div>
                 </div>
-            </div>
-        </transition>
+            </transition>
+        </div>
     </div>
 </template>
 <script>
@@ -29,7 +30,7 @@
     export default {
         data() {
             return {
-                selectTime:"",
+                selectTime: "",
                 isMoving: false,
                 x1: 0,
                 y1: 0,
@@ -86,6 +87,9 @@
                     setTimeout(() => {
                         _this.$store.commit('setIsOpen', true);
                     }, 100);
+
+                    ipcRenderer.send('modeStatus', false);
+                    _this.bubble = [];
                 }
             },
             switchView(path) {
@@ -96,7 +100,7 @@
             initTaskNum() {
                 let temp = [],
                     todolist = local.getData('todolist');
-                for (let n of JSON.parse(todolist)) {
+                for (let n of todolist) {
                     if (n.status == 0 && !n.isRecover) {
                         if (!temp[n.category]) {
                             temp[n.category] = 1
@@ -154,6 +158,7 @@
                     title: item.title,
                     date: postTime
                 })
+                _this.closeNotice(item.id)
 
             }
         },

@@ -126,7 +126,7 @@
                         <FormItem prop="remindDate" :show-message="false">
                           <DatePicker type="datetime" v-model="item.remindDate" format="yyyy-MM-dd HH:mm"
                             placeholder="选择提醒时间" class="datetime" placement="right" :options="dateOption"
-                            :clearable="false" :transfer="true" :editable="false">
+                            :clearable="false" :transfer="true" :editable="false" >
                           </DatePicker>
                         </FormItem>
                         </Col>
@@ -315,10 +315,10 @@
         modeStatus:function(){
           return this.$store.state.Counter.modeStatus
         },
-        todolist:function(){
+        todolist: function () {
           return this.$store.state.Counter.todolist
         },
-        menuList:function(){
+        menuList: function () {
           return this.$store.state.Counter.menuList
         }
     },
@@ -762,21 +762,20 @@
     watch: {
       menuList: {
         handler: function (val, oldVal) {
-          local.setData('menuList', val);
+          this.$store.commit('setMenuList',val)
         },
         deep: true
       },
       todolist: {
         handler: function (val, oldVal) {
-          local.setData('todolist', val);
+          this.$store.commit('setTodolist',val)
         },
         deep: true
       }
     },
     created() {
-      //本地数据同步
-      this.$store.commit('setTodolist',JSON.parse(local.getData('todolist')))
-      this.$store.commit('setMenuList',JSON.parse(local.getData('menuList')))
+      this.$store.commit('setTodolist', local.getData('todolist'))
+      this.$store.commit('setMenuList', local.getData('menuList'))
     },
     mounted() {
       let _this = this
@@ -792,10 +791,16 @@
             _this.$store.commit('setIsOpen', false);
             _this.addTypeClose('typeValidate')
             _this.$refs.addType_modal.close();
-            _this.editTaskClose();
+         
             for(let m in _this.$refs){
               if(m.includes('editTask_modal')){
-                  _this.$refs[m][0].visible = false;
+                if(_this.$refs[m][0].visible){
+                     _this.editTaskClose();
+                     _this.$refs[m][0].visible  = false;
+                }else{
+                  _this.$refs[m][0].visible  = false;
+                }
+                 
               }
             }
             _this.addTaskClose('listValidate')
@@ -804,6 +809,8 @@
             _this.$router.push({
                 path:'floatbox'
             })
+  
+           
         }
       })  
     }

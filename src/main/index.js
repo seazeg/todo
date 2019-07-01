@@ -51,7 +51,7 @@ function moveFn(e, win, param) {
         width: param.w,
         height: param.h
       })
-    }, 300);
+    }, 100);
 
   } else if (x > width - param.w) {
     if (!param.isFloat) {
@@ -64,7 +64,7 @@ function moveFn(e, win, param) {
         width: param.w,
         height: param.h
       })
-    }, 300);
+    }, 100);
   }
   if (y < 0) {
     if (!param.isFloat) {
@@ -77,7 +77,7 @@ function moveFn(e, win, param) {
         width: param.w,
         height: param.h
       })
-    }, 300);
+    }, 100);
   } else if (y > height - param.h) {
     if (!param.isFloat) {
       e.sender.send('closeMainWin', true);
@@ -89,7 +89,7 @@ function moveFn(e, win, param) {
         width: param.w,
         height: param.h
       })
-    }, 300);
+    }, 100);
   }
 }
 
@@ -111,6 +111,7 @@ function floatWindow() {
     maximizable: false,
     minimizable: false
   })
+
 
   floatBox.once('ready-to-show', () => {
 
@@ -161,19 +162,23 @@ ipcMain.on('openBubbleWin', function (e, arg) {
   if (arg) {
     let x = floatBox.getBounds().x,
       y = floatBox.getBounds().y;
+
+
     floatBox.setBounds({
       x: x,
       y: y,
       width: 300,
       height: 300
     });
+    
   }
 });
 
 //判断mode模式
 ipcMain.on('modeStatus', function (e, arg) {
   if (arg == true) {
-    floatBox.removeAllListeners();
+    //窗口模式
+    removeListeners(floatBox);
     floatBox.on('move', (e, cmd) => {
       moveFn(e, floatBox, {
         w: 800,
@@ -182,7 +187,8 @@ ipcMain.on('modeStatus', function (e, arg) {
       })
     })
   } else if (typeof arg == 'string') {
-    floatBox.removeAllListeners();
+    //悬浮气泡弹出后
+    removeListeners(floatBox);
     floatBox.on('move', (e, cmd) => {
       moveFn(e, floatBox, {
         w: 300,
@@ -191,7 +197,8 @@ ipcMain.on('modeStatus', function (e, arg) {
       })
     })
   } else {
-    floatBox.removeAllListeners();
+    //悬浮模式
+    removeListeners(floatBox);
     floatBox.on('move', (e, cmd) => {
       moveFn(e, floatBox, {
         w: floatWidth,
@@ -208,7 +215,10 @@ ipcMain.on('modeStatus', function (e, arg) {
 });
 
 
-
+function removeListeners(win){
+  win.removeAllListeners('blur');
+  win.removeAllListeners('move')
+}
 
 
 
