@@ -116,6 +116,7 @@
                 let _this = this
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
                     if (!_this.isWinOpen) {
+                        document.querySelectorAll("#ding")[0].play()
                         ipcRenderer.send('openBubbleWin', true);
                         ipcRenderer.send('modeStatus', 'bubble');
                         let task = JSON.parse(arg);

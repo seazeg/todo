@@ -703,6 +703,7 @@
       getTaskResult() {
         let _this = this;
         ipcRenderer.on('timedTask-reply', (event, arg) => {  
+          document.querySelectorAll("#ding")[0].play()
           let task = JSON.parse(arg);
           _this.TASKID = task.id
           if(_this.isWinOpen){

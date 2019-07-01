@@ -12,6 +12,13 @@
   </head>
   <body>
     <div id="app"></div>
+    <% if (process.env.NODE_ENV !== 'development') { %>
+      <audio id="ding" src="../electron/static/ding.mp3" ></audio>
+      <% } %>
+  
+      <% if (process.env.NODE_ENV === 'development') { %>
+        <audio id="ding" src="../static/ding.mp3" ></audio>
+      <% } %>
     <!-- Set `__static` path to static files in production -->
     <% if (!process.browser) { %>
       <script>
