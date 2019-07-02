@@ -128,8 +128,12 @@
                 let _this = this
                 for (let item of _this.todolist) {
                     if (item.id == id) {
-                        item.status = 1;
-                        item.checked = true;
+                        if (item.times == 1) {
+                            item.status = 1;
+                            item.checked = true;
+                        } else {
+                            _this.timesHandler(item)
+                        }
                     }
                 }
                 _this.$store.commit('updateNum')
@@ -165,6 +169,57 @@
                     date: postTime
                 })
 
+
+            },
+            timesHandler(item) {
+                let _this = this;
+                let postTime = _this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
+                switch (item.times) {
+                    case 2:
+                        //每小时
+                        ipcRenderer.send('timedTask-message', {
+                            id: item.id,
+                            title: item.title,
+                            date: _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
+                        })
+                        postTime = _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
+                        break;
+                    case 3:
+                        //每天
+                        ipcRenderer.send('timedTask-message', {
+                            id: item.id,
+                            title: item.title,
+                            date: _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
+                        })
+                        postTime = _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
+                        break;
+                    case 4:
+                        //每周
+                        ipcRenderer.send('timedTask-message', {
+                            id: item.id,
+                            title: item.title,
+                            date: _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
+                        })
+                        postTime = _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
+                        break;
+                    case 5:
+                        //每月
+                        ipcRenderer.send('timedTask-message', {
+                            id: item.id,
+                            title: item.title,
+                            date: _this.$moment(item.date).add(1, 'months').format('YYYY-MM-DD HH:mm')
+                        })
+                        postTime = _this.$moment(item.date).add(1, 'months').format('YYYY-MM-DD HH:mm')
+                        break;
+                    default:
+                        break;
+                }
+
+                for (let i of _this.todolist) {
+                    if (i.id == item.id) {
+                        i.remindDate = postTime
+                    }
+                }
 
             }
         },
