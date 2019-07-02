@@ -80,7 +80,15 @@
                       :transfer="true" ref="datetime" :editable="false"></DatePicker>
                   </FormItem>
                   </Col>
-                  <Col span="12">
+                   <Col span="6">
+                  <FormItem prop="thisTimes" :show-message="false">
+                    <Select v-model="listValidate.thisTimes" class="select" placeholder="选择频率">
+                      <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
+                      </Option>
+                    </Select>
+                  </FormItem>
+                  </Col>
+                  <Col span="6">
                   <FormItem prop="thisTasktype" :show-message="false">
                     <Select v-model="listValidate.thisTasktype" class="select" placeholder="选择分类">
                       <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">{{ item.label }}
@@ -130,7 +138,15 @@
                           </DatePicker>
                         </FormItem>
                         </Col>
-                        <Col span="12">
+                        <Col span="6">
+                        <FormItem prop="times" :show-message="false">
+                          <Select v-model="item.times" class="select" placeholder="选择频率">
+                            <Option v-for="(item,index) in timesList" :value="item.value" :key="index">{{ item.label }}
+                            </Option>
+                          </Select>
+                        </FormItem>
+                        </Col>
+                        <Col span="6">
                         <FormItem prop="category" :show-message="false">
                           <Select v-model="item.category" class="select" placeholder="选择分类">
                             <Option v-for="(item,index) in tasktypeList" :value="item.value" :key="index">
@@ -200,6 +216,7 @@
           taskName: "",
           addDate: "",
           thisTasktype: "",
+          thisTimes: 1
         },
         listRuleValidate: {
           taskName: [{
@@ -210,6 +227,9 @@
             type: 'date'
           }],
           thisTasktype: [{
+            required: true
+          }],
+          thisTimes: [{
             required: true
           }]
         },
@@ -237,19 +257,19 @@
           label: "本周"
         }],
         timesList: [{
-          value:"one",
-          label:"单次"
+          value: 1,
+          label: "一次"
         },{
-          value: "work",
-          label: "工作日"
+          value: 2,
+          label: "每小时"
         },{
-          value: "day",
+          value: 3,
           label: "每天"
         }, {
-          value: "week",
+          value: 4,
           label: "每周"
         }, {
-          value: "month",
+          value: 5,
           label: "每月"
         }],
         postTimeList:[{
@@ -457,6 +477,7 @@
               category = _this.listValidate.thisTasktype,
               isShow = false,
               taskType = _this.checkedTaskType,
+              times = _this.listValidate.thisTimes,
               id = guid()
 
             if (taskType == '全部' || taskType == category) {
@@ -467,6 +488,7 @@
               title: title,
               category: category,
               remindDate: _this.$moment(date).format('YYYY-MM-DD HH:mm'),
+              times:times,
               status: 0,
               checked: false,
               isShow: isShow,
@@ -479,12 +501,14 @@
             _this.listValidate.taskName = "";
             _this.listValidate.addDate = "";
             _this.listValidate.thisTasktype = ""
+            _this.listValidate.thisTimes = 1
             _this.$refs.addTask_modal.close();
             //开启定时任务
             ipcRenderer.send('timedTask-message', {
               id: id,
               title: title,
-              date: _this.$moment(date).format('YYYY-MM-DD HH:mm')
+              date: _this.$moment(date).format('YYYY-MM-DD HH:mm'),
+              times: times
             })
           }
         });
@@ -495,6 +519,7 @@
         _this.listValidate.taskName = "";
         _this.listValidate.addDate = "";
         _this.listValidate.thisTasktype = "";
+        _this.listValidate.thisTimes = 1;
         _this.$refs[name].resetFields();
       },
       //打开编辑弹层
@@ -506,7 +531,8 @@
           title: item.title,
           category: item.category,
           remindDate: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm'),
-          index: index
+          index: index,
+          times:item.times
         }
       },
       //编辑任务
@@ -520,7 +546,8 @@
             ipcRenderer.send('timedTask-message', {
               id: item.id,
               title: item.title,
-              date: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm')
+              date: _this.$moment(item.remindDate).format('YYYY-MM-DD HH:mm'),
+              times: item.times
             })
 
           }
@@ -535,6 +562,7 @@
           _this.$set(todo, 'title', item.title);
           _this.$set(todo, 'category', item.category)
           _this.$set(todo, 'remindDate', item.remindDate)
+          _this.$set(todo, 'times', item.times)
         }
       },
       //删除任务
@@ -725,7 +753,10 @@
                 )
               }
             });
-            document.querySelectorAll("#ding")[0].play()
+            document.querySelectorAll("#ding")[0].play();
+            setTimeout(() => {
+               _this.timesHandler(task)
+            }, 10000);
           }
         })
       },
@@ -735,8 +766,12 @@
         _this.$Notice.close(id);
         for(let item of _this.todolist){
           if(item.id == id){
-            item.status = 1;
-            item.checked = true;
+            if(item.times==1){
+              item.status = 1;
+              item.checked = true;
+            }else{
+                _this.timesHandler(item)
+            }
           }
         }
         _this.updateNum();
@@ -758,6 +793,57 @@
               date: postTime
           })
            _this.$Notice.close(item.id);
+      },
+      timesHandler(item){
+        let _this = this;
+        let postTime = _this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
+        switch (item.times) {
+            case 2:
+              //每小时
+              ipcRenderer.send('timedTask-message', {
+                id: item.id,
+                title: item.title,
+                date: _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
+              })
+              postTime = _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
+              break;
+            case 3:
+              //每天
+              ipcRenderer.send('timedTask-message', {
+                id: item.id,
+                title: item.title,
+                date: _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
+              })
+              postTime = _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
+              break;
+            case 4:
+              //每周
+              ipcRenderer.send('timedTask-message', {
+                id: item.id,
+                title: item.title,
+                date: _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
+              })
+              postTime = _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
+              break;
+            case 5:
+              //每月
+              ipcRenderer.send('timedTask-message', {
+                id: item.id,
+                title: item.title,
+                date: _this.$moment(item.date).add(1, 'months').format('YYYY-MM-DD HH:mm')
+              })
+              postTime = _this.$moment(item.date).add(1, 'months').format('YYYY-MM-DD HH:mm')
+              break;
+            default:
+              break;
+          }
+          
+          for(let i of _this.todolist){
+            if(i.id == item.id){
+              i.remindDate = postTime
+            }
+          }
+
       }
     },
     watch: {

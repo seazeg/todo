@@ -12,6 +12,7 @@ ipcMain.on('timedTask-message', (e, task) => {
   }
   console.log(task);
   taskList[task.id] = schedule.scheduleJob(task.date, () => {
+    console.log('完成');
     e.sender.send('timedTask-reply', `${JSON.stringify(task)}`)
   });
 

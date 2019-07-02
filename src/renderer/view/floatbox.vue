@@ -173,8 +173,8 @@
             _this.initTaskNum();
             _this.getTaskResult();
             // //开发完成后删
-            // ipcRenderer.send('openBubbleWin', true);
-            // ipcRenderer.send('modeStatus', 'bubble')
+            ipcRenderer.send('openBubbleWin', true);
+            ipcRenderer.send('modeStatus', 'bubble')
         }
     }
 </script>
