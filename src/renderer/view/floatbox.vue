@@ -116,11 +116,11 @@
                 let _this = this
                 ipcRenderer.on('timedTask-reply', (event, arg) => {
                     if (!_this.isWinOpen) {
-                        document.querySelectorAll("#ding")[0].play()
                         ipcRenderer.send('openBubbleWin', true);
                         ipcRenderer.send('modeStatus', 'bubble');
                         let task = JSON.parse(arg);
-                        _this.bubble.push(task)
+                        _this.bubble.push(task);
+                        document.querySelectorAll("#ding")[0].play()
                     }
                 })
             },
@@ -154,12 +154,17 @@
                         i.remindDate = postTime
                     }
                 }
+                for (let b = 0; b < _this.bubble.length; b++) {
+                    if (_this.bubble[b].id == item.id) {
+                        _this.bubble.splice(b, 1)
+                    }
+                }
                 ipcRenderer.send('timedTask-message', {
                     id: item.id,
                     title: item.title,
                     date: postTime
                 })
-                _this.closeNotice(item.id)
+
 
             }
         },

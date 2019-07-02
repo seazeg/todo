@@ -45,6 +45,8 @@ body {
 }
 
 
+
+
 //悬浮框
 .floatbox_warp {
     width: 100%;
@@ -278,6 +280,11 @@ body {
     cursor: pointer;
 }
 
+.task_type .list{
+    max-height: 300px;
+    overflow: scroll;
+}
+
 
 .addType .content {
     width: 60%;
@@ -424,6 +431,10 @@ body {
 .task_list .item .date {
     font-size: 12px;
     font-weight: bolder;
+}
+
+.task_list .item .date.over {
+    color:@error_color
 }
 
 .task_list .item .tools {

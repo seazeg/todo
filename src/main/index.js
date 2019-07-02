@@ -124,7 +124,7 @@ function floatWindow() {
     floatBox = null
   })
 
-  // macAllFullScreenTopHack(floatBox)
+  macAllFullScreenTopHack(floatBox)
 
   //边缘吸附效果
   floatBox.on('move', (e, cmd) => {

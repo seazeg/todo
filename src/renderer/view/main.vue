@@ -106,7 +106,7 @@
               </Checkbox>
               <span class="title left" v-if="menuList[1].checked">{{item.title}}</span>
               <span v-if="!menuList[1].checked"
-                class="date">{{$moment(new Date()).isSame(item.remindDate,'day')?$moment(item.remindDate).format('HH:mm'):$moment(item.remindDate).format('MM-DD')}}</span>
+                class="date" :class="{'over':$moment(new Date()).isAfter(item.remindDate)}">{{$moment(new Date()).isSame(item.remindDate,'day')?$moment(item.remindDate).format('HH:mm'):$moment(item.remindDate).format('MM-DD')}}</span>
               <span class="tools">
                 <i class="iconfont icon-bianji edit" @click="openEdit(item,index)" v-if="!menuList[1].checked"></i>
                 <i class="iconfont icon-huifu revert" @click="revertTask(item)" v-else></i>
@@ -703,7 +703,6 @@
       getTaskResult() {
         let _this = this;
         ipcRenderer.on('timedTask-reply', (event, arg) => {  
-          document.querySelectorAll("#ding")[0].play()
           let task = JSON.parse(arg);
           _this.TASKID = task.id
           if(_this.isWinOpen){
@@ -726,6 +725,7 @@
                 )
               }
             });
+            document.querySelectorAll("#ding")[0].play()
           }
         })
       },
