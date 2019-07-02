@@ -113,8 +113,10 @@
                 <span class="title">{{item.title}}</span>
               </Checkbox>
               <span class="title left" v-if="menuList[1].checked">{{item.title}}</span>
+              <span class="date">{{item.times}}</span>
               <span v-if="!menuList[1].checked"
-                class="date" :class="{'over':$moment(new Date()).isAfter(item.remindDate)}">{{$moment(new Date()).isSame(item.remindDate,'day')?$moment(item.remindDate).format('HH:mm'):$moment(item.remindDate).format('MM-DD')}}</span>
+                class="date" :class="{'over':$moment(new Date()).isAfter(item.remindDate)&&item.times=='单次'}" ><b v-dateview="item"></b></span>
+                <!-- {{$moment(new Date()).isSame(item.remindDate,'day')&&item.times!='单次'?$moment(item.remindDate).format('HH:mm'):$moment(item.remindDate).format('MM-DD')}}</span> -->
               <span class="tools">
                 <i class="iconfont icon-bianji edit" @click="openEdit(item,index)" v-if="!menuList[1].checked"></i>
                 <i class="iconfont icon-huifu revert" @click="revertTask(item)" v-else></i>
@@ -170,8 +172,9 @@
               <Checkbox v-model="item.checked" disabled>
                 <span class="title del">{{item.title}}</span>
               </Checkbox>
+              <span class="date">{{item.times}}</span>
               <span
-                class="date">{{$moment(new Date()).isSame(item.remindDate,'day')?$moment(item.remindDate).format('HH:mm'):$moment(item.remindDate).format('MM-DD')}}</span>
+                class="date"><b v-dateview="item"></b></span>
               <span class="tools">
                 <i class="iconfont icon-huifu revert" @click="revertTask(item)"></i>
                 <!-- <i class="iconfont icon-shanchu remove" @click="removeTask(item)"></i> -->
@@ -216,7 +219,7 @@
           taskName: "",
           addDate: "",
           thisTasktype: "",
-          thisTimes: 1
+          thisTimes: "单次"
         },
         listRuleValidate: {
           taskName: [{
@@ -257,19 +260,19 @@
           label: "本周"
         }],
         timesList: [{
-          value: 1,
-          label: "一次"
+          value: "单次",
+          label: "单次"
         },{
-          value: 2,
+          value: "每小时",
           label: "每小时"
         },{
-          value: 3,
+          value: "每天",
           label: "每天"
         }, {
-          value: 4,
+          value: "每周",
           label: "每周"
         }, {
-          value: 5,
+          value: "每月",
           label: "每月"
         }],
         postTimeList:[{
@@ -501,7 +504,7 @@
             _this.listValidate.taskName = "";
             _this.listValidate.addDate = "";
             _this.listValidate.thisTasktype = ""
-            _this.listValidate.thisTimes = 1
+            _this.listValidate.thisTimes = "单次"
             _this.$refs.addTask_modal.close();
             //开启定时任务
             ipcRenderer.send('timedTask-message', {
@@ -519,7 +522,7 @@
         _this.listValidate.taskName = "";
         _this.listValidate.addDate = "";
         _this.listValidate.thisTasktype = "";
-        _this.listValidate.thisTimes = 1;
+        _this.listValidate.thisTimes = "单次";
         _this.$refs[name].resetFields();
       },
       //打开编辑弹层
@@ -567,8 +570,9 @@
       },
       //删除任务
       removeTask(obj) {
-        let todolist = this.todolist;
-        if (!this.menuList[1].checked) {
+        let _this = this
+        let todolist = _this.todolist;
+        if (!_this.menuList[1].checked) {
           //移入废稿箱
           for (let item of todolist) {
             if (item.title === obj.title) {
@@ -576,7 +580,7 @@
               obj.isRecover = true;
             }
           }
-          this.$Message.success('事项已移入废稿箱');
+          _this.$Message.success('事项已移入废稿箱');
         } else {
           //彻底删除
           for (let i = 0; i < todolist.length; i++) {
@@ -584,20 +588,24 @@
               todolist.splice(i, 1)
             }
           }
-          this.$Message.success('事项删除成功');
+          _this.$Message.success('事项删除成功');
         }
-        this.updateNum();
+        _this.updateNum();
+        ipcRenderer.send('timedTaskCancel-message', obj.id)
       },
       //完成任务
       finishTask(obj) {
+        let _this = this
         if (obj.checked) {
           obj.status = 1;
-          this.updateNum();
+          _this.updateNum();
+          ipcRenderer.send('timedTaskCancel-message', obj.id)
         }
       },
       //恢复任务
       revertTask(obj) {
-        if (!this.menuList[1].checked) {
+        let _this = this
+        if (!_this.menuList[1].checked) {
           //已完成任务的恢复
           obj.status = 0;
           obj.checked = false;
@@ -607,6 +615,12 @@
           obj.isShow = false;
         }
         this.updateNum();
+        ipcRenderer.send('timedTask-message', {
+          id: obj.id,
+          title: obj.title,
+          date: _this.$moment(obj.remindDate).format('YYYY-MM-DD HH:mm'),
+          times: obj.times
+        })
       },
       //即时搜索
       search() {
@@ -766,7 +780,7 @@
         _this.$Notice.close(id);
         for(let item of _this.todolist){
           if(item.id == id){
-            if(item.times==1){
+            if(item.times == "单次"){
               item.status = 1;
               item.checked = true;
             }else{
@@ -798,7 +812,7 @@
         let _this = this;
         let postTime = _this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
         switch (item.times) {
-            case 2:
+            case "每小时":
               //每小时
               ipcRenderer.send('timedTask-message', {
                 id: item.id,
@@ -807,7 +821,7 @@
               })
               postTime = _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
               break;
-            case 3:
+            case "每天":
               //每天
               ipcRenderer.send('timedTask-message', {
                 id: item.id,
@@ -816,7 +830,7 @@
               })
               postTime = _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
               break;
-            case 4:
+            case "每周":
               //每周
               ipcRenderer.send('timedTask-message', {
                 id: item.id,
@@ -825,7 +839,7 @@
               })
               postTime = _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
               break;
-            case 5:
+            case "每月":
               //每月
               ipcRenderer.send('timedTask-message', {
                 id: item.id,

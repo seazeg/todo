@@ -4,7 +4,7 @@ import {
 } from 'electron'
 
 
-let taskList = []
+let taskList = {}
 
 ipcMain.on('timedTask-message', (e, task) => {
   if (taskList[task.id]) {
@@ -12,17 +12,24 @@ ipcMain.on('timedTask-message', (e, task) => {
   }
   console.log(task);
   taskList[task.id] = schedule.scheduleJob(task.date, () => {
-    console.log('完成');
     e.sender.send('timedTask-reply', `${JSON.stringify(task)}`)
   });
+  console.log('start=========>\n', taskList);
+
+  for (let item in taskList) {
+    if (!taskList[item]) {
+      delete taskList[item]
+    }
+  }
 
 })
 
-ipcMain.on('timedTaskCancel-message', (e, task) => {
-  taskList[task.id].cancel();
-  for (let i = 0; i < taskList.length; i++) {
-    if (taskList[i].id == task.id) {
-      taskList.splice(i, 1)
+ipcMain.on('timedTaskCancel-message', (e, taskId) => {
+  taskList[taskId].cancel();
+  for (let item in taskList) {
+    if (item == taskId) {
+      delete taskList[item]
     }
   }
+  console.log('del=========>\n', taskList);
 })

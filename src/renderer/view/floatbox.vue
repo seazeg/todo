@@ -128,7 +128,7 @@
                 let _this = this
                 for (let item of _this.todolist) {
                     if (item.id == id) {
-                        if (item.times == 1) {
+                        if (item.times == "单次") {
                             item.status = 1;
                             item.checked = true;
                         } else {
@@ -175,7 +175,7 @@
                 let _this = this;
                 let postTime = _this.$moment(new Date()).format('YYYY-MM-DD HH:mm')
                 switch (item.times) {
-                    case 2:
+                    case "每小时":
                         //每小时
                         ipcRenderer.send('timedTask-message', {
                             id: item.id,
@@ -184,7 +184,7 @@
                         })
                         postTime = _this.$moment(item.date).add(1, 'hours').format('YYYY-MM-DD HH:mm')
                         break;
-                    case 3:
+                    case "每天":
                         //每天
                         ipcRenderer.send('timedTask-message', {
                             id: item.id,
@@ -193,7 +193,7 @@
                         })
                         postTime = _this.$moment(item.date).add(1, 'days').format('YYYY-MM-DD HH:mm')
                         break;
-                    case 4:
+                    case "每周":
                         //每周
                         ipcRenderer.send('timedTask-message', {
                             id: item.id,
@@ -202,7 +202,7 @@
                         })
                         postTime = _this.$moment(item.date).add(1, 'weeks').format('YYYY-MM-DD HH:mm')
                         break;
-                    case 5:
+                    case "每月":
                         //每月
                         ipcRenderer.send('timedTask-message', {
                             id: item.id,

@@ -6,6 +6,7 @@ import moment from 'moment'
 // import egUtils from 'eg-utils'
 import {local} from './libs/local'
 import './components/index'
+import './libs/directive'
 import store from './store/'
 import VueDND from 'awe-dnd'
 
