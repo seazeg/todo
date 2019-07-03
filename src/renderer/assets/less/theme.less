@@ -4,6 +4,7 @@
 
 body {
     background: transparent;
+    // pointer-events: none
 }
 
 .hide {
@@ -52,10 +53,10 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
+   
 }
 
 .floatbox {
-
     // background: linear-gradient(45deg, @main_color, #111, @main_color);
     background: @main_color;
     border: 1px solid @font_g_color;
@@ -63,10 +64,8 @@ body {
     height: 50px;
     border-radius: 10px;
     -webkit-app-region: drag;
-    cursor: pointer;
     transition: all @speed;
     -webkit-transition: all @speed;
-
 }
 
 .floatbox span {
@@ -76,7 +75,9 @@ body {
     line-height: 50px;
     display: block;
     font-size: 24px;
-    font-family: fantasy
+    font-family: fantasy;
+    user-select: none;
+    cursor: default
 }
 
 .floatbox.open {
@@ -99,9 +100,9 @@ body {
     left: 55px;
     top: 1px;
     font-size: 0;
-    background: #f0f0f0;
+    background: #fafafa;
     border-radius: 5px;
-    // border:1px solid @primary_color
+    border:1px solid @primary_color
 }
 
 .bubblebox .name {
@@ -154,7 +155,7 @@ body {
 .bubblebox>.group span.over {
     background: @primary_color;
     color: @font_w_color;
-    border-top-right-radius: 5px;
+    border-top-right-radius: 4px;
 }
 
 .bubblebox>.group span.post {
@@ -419,7 +420,7 @@ body {
 
 
 .task_list .item .title {
-    width: 358px;
+    width: 350px;
     color: #666;
 }
 
@@ -428,7 +429,7 @@ body {
 }
 
 .task_list .item .title.del {
-    width: 380px;
+    width: 370px;
     text-decoration: line-through
 }
 
@@ -436,6 +437,7 @@ body {
     font-size: 12px;
     font-weight: bolder;
     width: 32px;
+    display: inline-block;
 }
 
 .task_list .item .date.over {
@@ -467,7 +469,7 @@ body {
 
 .task_list .item span.title.left {
     padding-left: 23px;
-    width: 426px;
+    width: 420px;
 }
 
 
@@ -657,4 +659,9 @@ body {
 
 .ivu-notice-notice {
     overflow: inherit
+}
+
+.ivu-modal-fullscreen .ivu-modal-content{
+    border-radius: 9px;
+    border: 1px solid @font_g_color
 }

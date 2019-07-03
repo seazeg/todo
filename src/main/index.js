@@ -109,14 +109,14 @@ function floatWindow() {
     frame: false,
     hasShadow: false,
     maximizable: false,
-    minimizable: false
+    minimizable: false,
+    // show:false
   })
 
 
-  floatBox.once('ready-to-show', () => {
-
-
-  })
+  // floatBox.once('ready-to-show', () => {
+  //   floatBox.show()
+  // })
 
   floatBox.loadURL(floatURL)
 
@@ -124,7 +124,7 @@ function floatWindow() {
     floatBox = null
   })
 
-  // macAllFullScreenTopHack(floatBox)
+  macAllFullScreenTopHack(floatBox)
 
   //边缘吸附效果
   floatBox.on('move', (e, cmd) => {
@@ -148,12 +148,12 @@ ipcMain.on('openMainWin', function (e, arg) {
   if (arg) {
     let x = floatBox.getBounds().x,
       y = floatBox.getBounds().y;
-    floatBox.setBounds({
-      x: x,
-      y: y,
-      width: 800,
-      height: 600
-    });
+        floatBox.setBounds({
+          x: x,
+          y: y,
+          width: 800,
+          height: 600
+        });
   }
 });
 
@@ -162,8 +162,6 @@ ipcMain.on('openBubbleWin', function (e, arg) {
   if (arg) {
     let x = floatBox.getBounds().x,
       y = floatBox.getBounds().y;
-
-
     floatBox.setBounds({
       x: x,
       y: y,
@@ -232,6 +230,7 @@ function macAllFullScreenTopHack(win) {
   win.show()
   app.dock.show()
 }
+
 
 app.on('ready', floatWindow)
 

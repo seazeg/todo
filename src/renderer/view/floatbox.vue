@@ -1,7 +1,7 @@
 <template>
-    <div class="floatbox_warp">
+    <div class="floatbox_warp" @mouseover="winGetFocus()">
         <div class="floatbox" :class="{'open':isWinOpen}" @mouseup.prevent="mouseup($event)"
-            @mousedown.prevent="mousedown($event)">
+            @mousedown.prevent="mousedown($event)" >
             <span>{{taskNum}}</span>
         </div>
         <div v-for="(item,index) in bubble" :key="'notice' + index">
@@ -22,7 +22,8 @@
 </template>
 <script>
     import {
-        ipcRenderer
+        ipcRenderer,
+        remote
     } from 'electron'
     import {
         local
@@ -70,6 +71,20 @@
             }
         },
         methods: {
+            winGetFocus() {
+                remote.getCurrentWindow().focus();
+            },
+            // winThrough() {
+            //     console.log('enter');
+            //     remote.getCurrentWindow().setIgnoreMouseEvents(true, {
+            //         forward: true
+            //     })
+            // },
+            // winOn() {
+            //     console.log('enter');
+            //     this.winGetFocus();
+            //     remote.getCurrentWindow().setIgnoreMouseEvents(false)
+            // },
             mousedown(e) {
                 this.x1 = e.screenX;
                 this.y1 = e.screenY;
@@ -228,8 +243,8 @@
             _this.initTaskNum();
             _this.getTaskResult();
             // //开发完成后删
-            ipcRenderer.send('openBubbleWin', true);
-            ipcRenderer.send('modeStatus', 'bubble')
+            // ipcRenderer.send('openBubbleWin', true);
+            // ipcRenderer.send('modeStatus', 'bubble')
         }
     }
 </script>

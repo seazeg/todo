@@ -16,6 +16,6 @@ Vue.directive('dateview', {
         } else {
             el.innerText = moment(obj.remindDate).format('MM-DD')
         }
-        console.log(obj);
+
     }
 })

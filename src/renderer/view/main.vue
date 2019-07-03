@@ -37,7 +37,7 @@
         <i class="iconfont icon-biaoqian" :class="{'selected':modeStatus}" @click="changeMode"></i>
       </div>
       <Modal class="addType" v-model="isAddType" fullscreen title="创建事项分类" ref="addType_modal"
-        @on-cancel="addTypeClose('typeValidate')" footer-hide>
+        @on-cancel="addTypeClose('typeValidate')" footer-hide :mask="false">
         <div class="content">
           <Form ref="typeValidate" :model="typeValidate" :rules="typeRuleValidate">
             <FormItem prop="addType" :show-message="false">
@@ -65,7 +65,7 @@
         </Select>
         <!-- 创建弹层 -->
         <Modal class="addType" v-model="isTask" fullscreen title="创建事项" ref="addTask_modal"
-          @on-cancel="addTaskClose('listValidate')" footer-hide>
+          @on-cancel="addTaskClose('listValidate')" footer-hide :mask="false">
           <div class="content mt">
             <Form ref="listValidate" :model="listValidate" :rules="listRuleValidate">
               <FormItem prop="taskName" :show-message="false">
@@ -124,7 +124,7 @@
               <!-- 编辑弹层 -->
 
               <Modal class="addType" fullscreen title="编辑事项" :ref="'editTask_modal'+index" @on-cancel="editTaskClose"
-                footer-hide v-if="!item.isRecover&&item.status==0">
+                footer-hide v-if="!item.isRecover&&item.status==0" :mask="false">
                 <div class="content mt">
                   <Form :ref="'editValidate'+index" :model="item" :rules="editRuleValidate">
                     <FormItem prop="title" :show-message="false">
@@ -580,7 +580,10 @@
               obj.isRecover = true;
             }
           }
-          _this.$Message.success('事项已移入废稿箱');
+          _this.$Message.success({
+            content:'事项已移入废稿箱',
+            duration:0.5
+          });
         } else {
           //彻底删除
           for (let i = 0; i < todolist.length; i++) {
@@ -588,7 +591,10 @@
               todolist.splice(i, 1)
             }
           }
-          _this.$Message.success('事项删除成功');
+          _this.$Message.success({
+            content:'事项删除成功',
+            duration:0.5
+          });
         }
         _this.updateNum();
         ipcRenderer.send('timedTaskCancel-message', obj.id)
@@ -621,6 +627,11 @@
           date: _this.$moment(obj.remindDate).format('YYYY-MM-DD HH:mm'),
           times: obj.times
         })
+         _this.$Message.success({
+            content:'事项恢复成功',
+            duration:0.5
+        });
+
       },
       //即时搜索
       search() {
@@ -891,13 +902,14 @@
          
             for(let m in _this.$refs){
               if(m.includes('editTask_modal')){
-                if(_this.$refs[m][0].visible){
-                     _this.editTaskClose();
-                     _this.$refs[m][0].visible  = false;
-                }else{
-                  _this.$refs[m][0].visible  = false;
-                }
-                 
+                if(_this.$refs[m]>0){
+                  if(_this.$refs[m][0].visible){
+                      _this.editTaskClose();
+                      _this.$refs[m][0].visible  = false;
+                  }else{
+                    _this.$refs[m][0].visible  = false;
+                  }
+                } 
               }
             }
             _this.addTaskClose('listValidate')

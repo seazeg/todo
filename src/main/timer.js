@@ -25,7 +25,9 @@ ipcMain.on('timedTask-message', (e, task) => {
 })
 
 ipcMain.on('timedTaskCancel-message', (e, taskId) => {
-  taskList[taskId].cancel();
+  if (!!taskList[taskId]) {
+    taskList[taskId].cancel();
+  }
   for (let item in taskList) {
     if (item == taskId) {
       delete taskList[item]
