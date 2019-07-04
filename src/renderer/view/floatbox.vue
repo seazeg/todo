@@ -1,8 +1,8 @@
 <template>
     <div class="floatbox_warp" @mouseover="winGetFocus()">
         <div id="floatbox" class="floatbox" :class="{'open':isWinOpen,'drag':isDrag}" @mouseup.prevent="mouseup($event)"
-            @mousedown.prevent="mousedown($event)" >
-            <span>{{taskNum}}</span>
+            @mousedown.prevent="mousedown($event)">
+            <span @mouseup.prevent="mouseup($event)">{{taskNum}}</span>
         </div>
         <div v-for="(item,index) in bubble" :key="'notice' + index">
             <transition name="component-fade" mode="out-in">
@@ -85,7 +85,7 @@
                 let distance = Math.sqrt((_this.x1 - _this.x2) * (_this.x1 - _this.x2) + (_this.y1 - _this.y2) * (_this
                     .y1 - _this
                     .y2))
-                
+
                 if (distance < 1) {
                     ipcRenderer.send('openMainWin', true);
                     _this.switchView('main');

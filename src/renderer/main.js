@@ -11,9 +11,6 @@ import store from './store/'
 import VueDND from 'awe-dnd'
 
 
-
-
-
 Vue.use(iView);
 Vue.use(VueDND)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))

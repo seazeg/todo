@@ -100,7 +100,7 @@ function floatWindow() {
     width: floatWidth,
     height: floatHeight,
     x: 0,
-    y: 0,
+    y: screen.getPrimaryDisplay().bounds.height / 3,
     transparent: true,
     frame: false,
     skipTaskbar: true,
