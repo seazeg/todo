@@ -58,8 +58,11 @@ body {
 
 .floatbox {
     // background: linear-gradient(45deg, @main_color, #111, @main_color);
-    background: @main_color;
-    border: 1px solid @font_g_color;
+    // background: @main_color;
+    // border: 1px solid @font_g_color;
+    background: url('../float.png') no-repeat;
+    background-size: 100%;
+    opacity: 0.7;
     width: 50px;
     height: 50px;
     border-radius: 10px;
@@ -69,12 +72,12 @@ body {
 }
 
 .floatbox span {
-    color: @font_g_color;
+    color: #263138;
     text-align: center;
     width: 100%;
-    line-height: 50px;
+    line-height: 56px;
     display: block;
-    font-size: 24px;
+    font-size: 18px;
     font-family: fantasy;
     user-select: none;
     cursor: default
@@ -89,7 +92,7 @@ body {
 
 .floatbox:hover {
     // background: linear-gradient(45deg, #111, #000, #111);
-    background: #000;
+    opacity: 1;
     transition: all @speed;
     -webkit-transition: all @speed;
 }

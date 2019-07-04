@@ -10,9 +10,6 @@ Vue.component(container.name, container);
 Vue.component(side.name, side);
 Vue.component(main.name, main);
 
-import iView from 'iview';
-Vue.use(iView);
-
 // import {
 //     Input,
 //     DatePicker,
