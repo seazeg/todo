@@ -1,6 +1,6 @@
 <template>
     <div class="floatbox_warp" @mouseover="winGetFocus()">
-        <div class="floatbox" :class="{'open':isWinOpen}" @mouseup.prevent="mouseup($event)"
+        <div id="floatbox" class="floatbox" :class="{'open':isWinOpen,'drag':isDrag}" @mouseup.prevent="mouseup($event)"
             @mousedown.prevent="mousedown($event)" >
             <span>{{taskNum}}</span>
         </div>
@@ -32,7 +32,7 @@
         data() {
             return {
                 selectTime: "",
-                isMoving: false,
+                isDrag: true,
                 x1: 0,
                 y1: 0,
                 x2: 0,
@@ -74,17 +74,6 @@
             winGetFocus() {
                 remote.getCurrentWindow().focus();
             },
-            // winThrough() {
-            //     console.log('enter');
-            //     remote.getCurrentWindow().setIgnoreMouseEvents(true, {
-            //         forward: true
-            //     })
-            // },
-            // winOn() {
-            //     console.log('enter');
-            //     this.winGetFocus();
-            //     remote.getCurrentWindow().setIgnoreMouseEvents(false)
-            // },
             mousedown(e) {
                 this.x1 = e.screenX;
                 this.y1 = e.screenY;
@@ -96,6 +85,7 @@
                 let distance = Math.sqrt((_this.x1 - _this.x2) * (_this.x1 - _this.x2) + (_this.y1 - _this.y2) * (_this
                     .y1 - _this
                     .y2))
+                
                 if (distance < 1) {
                     ipcRenderer.send('openMainWin', true);
                     _this.switchView('main');

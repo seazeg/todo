@@ -5,8 +5,9 @@
   "author": {
     "name": "Evan.G",
     "email": "seazeg@126.com",
-    "github":"https://github.com/seazeg/"
+    "github": "https://github.com/seazeg/"
   },
+  "appId": "com.eg.egtime",
   "description": "an effectiveness manger",
   "license": "MIT",
   "main": "./dist/electron/main.js",

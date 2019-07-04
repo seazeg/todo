@@ -106,17 +106,11 @@ function floatWindow() {
     skipTaskbar: true,
     autoHideMenuBar: true,
     resizable: false,
-    frame: false,
     hasShadow: false,
     maximizable: false,
     minimizable: false,
-    // show:false
+    show:false
   })
-
-
-  // floatBox.once('ready-to-show', () => {
-  //   floatBox.show()
-  // })
 
   floatBox.loadURL(floatURL)
 
@@ -124,6 +118,7 @@ function floatWindow() {
     floatBox = null
   })
 
+  floatBox.webContents.openDevTools()
   macAllFullScreenTopHack(floatBox)
 
   //边缘吸附效果
@@ -148,12 +143,12 @@ ipcMain.on('openMainWin', function (e, arg) {
   if (arg) {
     let x = floatBox.getBounds().x,
       y = floatBox.getBounds().y;
-        floatBox.setBounds({
-          x: x,
-          y: y,
-          width: 800,
-          height: 600
-        });
+    floatBox.setBounds({
+      x: x,
+      y: y,
+      width: 800,
+      height: 600
+    });
   }
 });
 
@@ -168,7 +163,7 @@ ipcMain.on('openBubbleWin', function (e, arg) {
       width: 300,
       height: 300
     });
-    
+
   }
 });
 
@@ -213,22 +208,25 @@ ipcMain.on('modeStatus', function (e, arg) {
 });
 
 
-function removeListeners(win){
+function removeListeners(win) {
   win.removeAllListeners('blur');
   win.removeAllListeners('move')
 }
 
 
-
-
 //mac下全屏置顶hack
 function macAllFullScreenTopHack(win) {
-  app.dock.hide()
-  win.setAlwaysOnTop(true, 'normal')
-  win.setVisibleOnAllWorkspaces(true)
-  win.setFullScreenable(false)
-  win.show()
-  app.dock.show()
+  if (process.platform == 'darwin') {
+    app.dock.hide()
+    win.setAlwaysOnTop(true, 'normal')
+    win.setVisibleOnAllWorkspaces(true)
+    win.setFullScreenable(false)
+    win.show()
+    app.dock.show()
+  } else {
+    win.setAlwaysOnTop(true);
+    win.show();
+  }
 }
 
 
