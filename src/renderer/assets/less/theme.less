@@ -53,7 +53,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-   
+
 }
 
 .floatbox {
@@ -86,8 +86,7 @@ body {
 .floatbox.open {
     width: 800px;
     height: 600px;
-    transition: all @speed;
-    -webkit-transition: all @speed;
+    animation: opacityFIX 1s;
 }
 
 .floatbox:hover {
@@ -95,6 +94,16 @@ body {
     opacity: 1;
     transition: all @speed;
     -webkit-transition: all @speed;
+}
+
+@keyframes opacityFIX {
+    from {
+       opacity: 0.7;
+    }
+
+    to {
+        opacity: 0;
+    }
 }
 
 .bubblebox {
@@ -105,7 +114,7 @@ body {
     font-size: 0;
     background: #fafafa;
     border-radius: 5px;
-    border:1px solid @primary_color
+    border: 1px solid @primary_color
 }
 
 .bubblebox .name {
@@ -134,25 +143,25 @@ body {
     border: none;
 }
 
-.bubblebox .ivu-select-single .ivu-select-selection{
-    height:auto;
+.bubblebox .ivu-select-single .ivu-select-selection {
+    height: auto;
 }
 
 .bubblebox .ivu-select-single .ivu-select-selection .ivu-select-placeholder,
 .bubblebox .ivu-select-single .ivu-select-selection .ivu-select-selected-value {
     color: @primary_color;
-    padding-left:13px;
+    padding-left: 13px;
 }
 
 
 
 
 .bubblebox>.group span {
-    font-size: 12px!important;
-    line-height: 24px!important;
-    height: 24px!important;
-    display: block!important;
-    font-weight: bolder!important;
+    font-size: 12px !important;
+    line-height: 24px !important;
+    height: 24px !important;
+    display: block !important;
+    font-weight: bolder !important;
 }
 
 .bubblebox>.group span.over {
@@ -239,7 +248,7 @@ body {
     color: @primary_color;
 }
 
-.head_tools i:active{
+.head_tools i:active {
     font-size: 25px;
 }
 
@@ -288,7 +297,7 @@ body {
     cursor: pointer;
 }
 
-.task_type .list{
+.task_type .list {
     max-height: 300px;
     overflow: scroll;
 }
@@ -444,7 +453,7 @@ body {
 }
 
 .task_list .item .date.over {
-    color:@error_color
+    color: @error_color
 }
 
 .task_list .item .tools {
@@ -664,7 +673,7 @@ body {
     overflow: inherit
 }
 
-.ivu-modal-fullscreen .ivu-modal-content{
+.ivu-modal-fullscreen .ivu-modal-content {
     border-radius: 9px;
     border: 1px solid @font_g_color
 }
