@@ -3,9 +3,8 @@ import 'iview/dist/styles/iview.css';
 import App from './App'
 import router from './router'
 import moment from 'moment'
-// import egUtils from 'eg-utils'
 import {local} from './libs/local'
-import './components/index'
+import './components/'
 import './libs/directive'
 import store from './store/'
 import VueDND from 'awe-dnd'
@@ -15,7 +14,6 @@ import VueDND from 'awe-dnd'
 Vue.use(VueDND)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
-// Vue.prototype.egUtils = egUtils
 Vue.prototype.$moment = moment;
 
 local.initData();
