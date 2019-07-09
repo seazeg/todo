@@ -902,7 +902,7 @@
          
             for(let m in _this.$refs){
               if(m.includes('editTask_modal')){
-                if(_this.$refs[m]>0){
+                if(_this.$refs[m].length>0){
                   if(_this.$refs[m][0].visible){
                       _this.editTaskClose();
                       _this.$refs[m][0].visible  = false;

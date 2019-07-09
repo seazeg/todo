@@ -118,7 +118,7 @@ function floatWindow() {
     floatBox = null
   })
 
-  floatBox.webContents.openDevTools()
+  // floatBox.webContents.openDevTools()
   macAllFullScreenTopHack(floatBox)
 
   //边缘吸附效果
