@@ -173,7 +173,7 @@
                     title: item.title,
                     date: postTime
                 })
-
+                _this.selectTime = ""
 
             },
             timesHandler(item) {
@@ -225,6 +225,7 @@
                         i.remindDate = postTime
                     }
                 }
+                 _this.selectTime = ""
 
             }
         },
