@@ -2,8 +2,10 @@ import {
   app,
   BrowserWindow,
   screen,
-  ipcMain
+  ipcMain,
+  powerMonitor
 } from 'electron'
+import moment from 'moment'
 
 import './timer'
 
@@ -109,7 +111,7 @@ function floatWindow() {
     hasShadow: false,
     maximizable: false,
     minimizable: false,
-    show:false
+    show: false
   })
 
   floatBox.loadURL(floatURL)
@@ -134,6 +136,14 @@ function floatWindow() {
       w: floatWidth,
       h: floatHeight
     })
+  })
+
+  powerMonitor.on('suspend', () => {
+    console.log('suspend')
+  })
+  powerMonitor.on('resume', () => {
+    console.log('resume======================================================resume');
+    floatBox.webContents.send('reinit',true)
   })
 
 }

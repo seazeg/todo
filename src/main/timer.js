@@ -4,7 +4,7 @@ import {
 } from 'electron'
 
 
-let taskList = {}
+let taskList = {};
 
 ipcMain.on('timedTask-message', (e, task) => {
   if (taskList[task.id]) {
